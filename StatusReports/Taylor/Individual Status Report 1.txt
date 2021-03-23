@@ -1,15 +1,15 @@
 ﻿From last week:
-* N/A
+* 3/22/2021
 
 
 
 
 Progress this week:
-* Assigned parts of project to team members
-* Looked over possible solutions and implementations of various features that were assigned to myself
-* Worked on Flask practice activities
+* Practiced Flask and learned basics of it
+* Helped brainstorm ideas for group project
 
 
 Goals this next week:
 * Start on a basic outline of features with the team.
 * Work on assigned features and look into examples where they have been implemented before and how to improve upon them.
+* Brainstorm ideas for front-end design of website
