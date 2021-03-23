@@ -1,0 +1,27 @@
+﻿Date 3/22/2021
+Team: Cyber Snowmen
+
+
+
+
+This week:
+* Brainstormed which features to add to app
+* Created a product backlog
+* Did set up stuff 
+* Do some basic planning
+* Brainstorming
+
+
+Next week:
+* Finalize responsibilities for app features
+* Brainstorm ideas for front-end design
+* Start creating our framework for the website
+* Getting a general overview of our design 
+
+
+Meeting Agenda:
+* Meet with the team every Thursday to finalize our report and discuss options/any issues with work relating to the project.
+* Start working on features possibly
+* Also planning out the layout and design
+* Discussing more about what roles we will each take 
+* Also how we will split the work up
