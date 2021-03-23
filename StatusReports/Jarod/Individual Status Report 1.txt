@@ -1,0 +1,15 @@
+﻿From last week:
+* N/A
+
+
+
+
+Progress this week:
+* Assigned parts of project to team members
+* Looked over possible solutions and implementations of various features that were assigned to myself
+* Worked on Flask practice activities
+
+
+Goals this next week:
+* Start on a basic outline of features with the team.
+* Work on assigned features and look into examples where they have been implemented before and how to improve upon them.
