@@ -4,7 +4,7 @@ Team: Cyber Snowmen
 
 
 
-This week:
+This week (3/22/2021):
 * Brainstormed which features to add to app
 * Created a product backlog
 * Did set up stuff 
@@ -12,7 +12,7 @@ This week:
 * Brainstorming
 
 
-Next week:
+Next week (3/29/2021):
 * Finalize responsibilities for app features
 * Brainstorm ideas for front-end design
 * Start creating our framework for the website
