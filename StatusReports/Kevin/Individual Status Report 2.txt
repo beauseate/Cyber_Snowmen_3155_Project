@@ -1,0 +1,15 @@
+From last week:
+* Started on basic framework of the website
+* Set up backlog to track who is working on what parts of the site
+* Established communication between team members
+
+
+
+Progress this week:
+* Start work on backend of site
+* Continue work on the framework of the website
+
+Goals this next week:
+* Continue working on the layout of website.
+* Begin work on specific functionality
+* Continue work on things such as CSS to ensure good looks of page.
