@@ -7,7 +7,7 @@ class User(db.Model):
     password = db.Column("Password", db.String(100))
     # Need to add a column for events attending/liked
 
-
-class Events(db.Model):
-    # Just added this here as a template for later
-    pass
+    def __init__(self, email, f_name, password):
+        self.email = email
+        self.f_name = f_name
+        self.password = password
