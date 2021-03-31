@@ -14,28 +14,54 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-logDetails = {'LoggedIn' : False, 'User' : None }
+logDetails = {'LoggedIn': False, 'User': None}
+
+
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
 @app.route('/')
 @app.route('/index')
 def index():
-    if logDetails['LoggedIn'] == True:
-        return render_template('Home.html', user = logDetails.get('User'))
+    if logDetails['LoggedIn']:
+        return render_template('Home.html', user=logDetails.get('User'))
     else:
-        return render_template('Home.html', user = None)
+        return render_template('Home.html', user=None)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
     if request.method == 'POST':
         userEmail = request.form['user_email']
-        name = request.form['f_name']
+        name = request.form['full_name']
         password = request.form['user_password']
-        if not re.search('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', userEmail):
-            return '<h1> Invalid email </h1>'
-        if not re.search('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$', password):
-            return ''' <h1>
+        errorMessage = validate_credentials(userEmail, name, password).get('Message')
+        if validate_credentials(userEmail, name, password).get('Result') is False:
+            return errorMessage
+        newUser = User(userEmail, name, password)
+        db.session.add(newUser)
+        db.session.commit()
+        currentUser = User.query.filter_by(email=userEmail).one()
+        logDetails['User'] = currentUser
+        logDetails['LoggedIn'] = True
+        return redirect(url_for('index', user=currentUser))
+    else:
+        return render_template('Registration.html')
+
+def validate_credentials(e, n, p):
+    error = ""
+    details = {'Message': error, 'Result': True}
+    if str(e) == "" or str(n) == "" or str(p) == "":
+        details['Message'] = '<h1> Fields cannot be left empty. </h1>'
+        details['Result'] = False
+        return details
+    if re.search('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', e) is None:
+        details['Message'] = '<h1> Invalid email </h1'
+        details['Result'] = False
+        return details
+    if re.search('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$', p) is None:
+        details['Result'] = False
+        details['Message'] = ''' <h1>
                             Error! <br>
                             Password must contain: <br>
                                     At least one number <br>
@@ -44,17 +70,9 @@ def registration():
                                     Have a length between 6-20 characters
                                     </h1>
                         '''
-        if str(userEmail) == "" or str(name) == "" or str(password) == "":
-            return '<h1> Fields cannot be left empty. </h1>'
-        newUser = User(userEmail, name, password)
-        db.session.add(newUser)
-        db.session.commit()
-        currentUser = User.query.filter_by(email = userEmail).one()
-        logDetails['User'] = currentUser
-        logDetails['LoggedIn'] = True
-        return redirect(url_for('index', user = currentUser))
     else:
-        return render_template('Registration.html')
+        details['Message'] = 'No errors'
+        return details
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
