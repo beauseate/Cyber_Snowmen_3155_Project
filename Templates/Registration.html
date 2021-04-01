@@ -5,12 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="User registration">
         <title>Registration</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
+
+
+        <nav>
+
+		<a href="/index"> Home </a> |
+		<a href="/register"> Register</a>
+
+	    </nav>
     </head>
 
     <body>
-
-        <form method="post">
-            First Name: <input type = "text" name = "f_name" />
+        <br>
+        <h1>Register</h1>
+        <h2>Enter account information</h2>
+        <br>
+        <form method="POST">
+            Name: <input type = "text" name = "full_name" />
             <br>
             Email: <input type = "text" name = "user_email" />
             <br>
