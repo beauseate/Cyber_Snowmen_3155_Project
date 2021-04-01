@@ -5,17 +5,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="User registration">
         <title>Registration</title>
+        <!-- styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='Registration.css') }}">
+
+
+        <nav>
+
+		<a href="/index"> Home </a> |
+		<a href="/register"> Register</a>
+
+	    </nav>
     </head>
 
     <body>
-
+        <br>
+        <h1>Register</h1>
+        <h2>Enter account information</h2>
+        <br>
         <form method="post">
-            First Name: <input type = "text" name = "f_name" />
+            Name: <input type = "text" name = "full_name" />
             <br>
             Email: <input type = "text" name = "user_email" />
             <br>
             Password: <input type = "password" name = "user_password" />
             <p><input type="submit" value="Register"/></p>
+
+                 {% if error.HasError %}
+                    <h3> {{ error.Message }}  </h3>
+                  {% endif %}
+
         </form>
 
     </body>

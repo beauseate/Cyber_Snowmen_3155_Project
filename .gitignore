@@ -1,3 +1,5 @@
 .vscode*
 venv
 __pycache__
+website_app.db
+.idea/
