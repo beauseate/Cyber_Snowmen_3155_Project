@@ -35,9 +35,9 @@ def registration():
         userEmail = request.form['user_email']
         name = request.form['full_name']
         password = request.form['user_password']
-        errorMessage = validate_credentials(userEmail, name, password).get('Message')
-        if validate_credentials(userEmail, name, password).get('Result') is False:
-            return errorMessage
+        validation = validate_credentials(userEmail, name, password)
+        if validation.get('Result') is False:
+            return validation.get('Message')
         newUser = User(userEmail, name, password)
         db.session.add(newUser)
         db.session.commit()
