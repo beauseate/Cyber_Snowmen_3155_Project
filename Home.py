@@ -55,6 +55,10 @@ def validate_credentials(e, n, p):
         errorDetails['HasError'] = True
         errorDetails['Message'] = 'Fields cannot be left empty.'
         return errorDetails
+    if not User.query.filter_by(email=e).first() is None:
+        errorDetails['HasError'] = True
+        errorDetails['Message'] = 'Email already in use.'
+        return errorDetails
     if re.search('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', e) is None:
         errorDetails['HasError'] = True
         errorDetails['Message'] = 'Invalid email'
