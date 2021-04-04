@@ -1,0 +1,21 @@
+From last week:
+* Start on a basic outline of features with the team.
+* Work on assigned features and look into examples where they have been implemented before and how to improve upon them.
+* Committing to appropriate assigned backlogs
+* Visualize backlog items
+* Fixed Schedule for availability to meet
+* Designed drawing for initial header and footer
+* Established apprpriate communication lines between group members
+
+
+Progress this week:
+* Establishing what backlog items I should do
+* Implementing header and footer to templates
+* Designing/start doing backlog items
+
+Goals this next week:
+* Designing/start doing backlog items
+* Establishing what backlog items I should do
+* Implementing header and footer to templates
+* Design/start doing other pages
+* Get group input on page designs
