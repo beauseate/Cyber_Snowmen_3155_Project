@@ -1,0 +1,12 @@
+Goals from last week:
+•	Plan ideas for front-end design of app
+•	Continue practicing on Flask to learn more about how to implement our app’s design
+•	Start on basic outline of features with the team
+Progress this week:
+•	Added more functionality to user registration
+•	Practiced with Flask more
+•	Added a database to our app to store user information
+Goals for next week:
+•	Continue practicing on Flask
+•	Possibly begin looking towards implementing other features
+•	Ensure that user registration is mostly bug-free

@@ -1,0 +1,15 @@
+From last week (3/29/21):
+* Working on skeleton page for User-Sign In with basic functionality
+* Review working designs of sign-in pages along with UI enhancements
+* Work on Flask practice activity 4: Databases
+
+
+Progress this week (4/5/21):
+* Continue to work on skeleton page for User-Sign In with basic fucntionality
+* Review TA feedback from Sprint 3 assignment
+* Work on Flask practice activity 5: Deleting and editing
+
+
+Goals this next week (4/12/21):
+* Review and test functionality of sign-in and registration
+* Clarify how the database will be tracked whether locally or through a server

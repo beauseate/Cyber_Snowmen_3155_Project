@@ -1,0 +1,38 @@
+﻿Date 4/4/2021
+Team: Cyber Snowmen
+
+
+
+
+Goals from last week:
+* Finalize responsibilities for app features
+* Brainstorm ideas for front-end design
+* Getting a general overview of our design
+* Made a wireframe of the website
+* Start implementing basic front-end designs (header, footer, nav, etc.)
+* Start implementing basic CSS for designs for accessibility
+* Identify any additional features to be added to backlog
+* Start work on create event
+* Start work on user sign-in page and possibly implement database 
+
+
+This week(4/5/2021):
+* Implemented a basic database for the app
+* Added more functionality to the website such as registering users
+* Implementing basic front-end designs (header, footer, nav, etc.)
+* Start implementing basic CSS for designs for accessibility
+* Start work on create event
+* Identify any additional features to be added to backlog
+
+
+Next week(4/12/2021):
+* Add events to the database so events can be created
+* Add more to the HTML, CSS for the appearance of the site
+* Identify any additional features to be added to backlog
+
+
+
+
+Meeting Agenda:
+* Get feedback from TA on wireframe and Sprint 3
+* Finalize features on product backlog

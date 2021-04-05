@@ -1,0 +1,12 @@
+body {
+    padding: 30px 30px;
+    }
+h1{
+    color:green;
+}
+h3{
+    color:red;
+}
+input[type=submit]{
+	background-color: goldenrod;
+}

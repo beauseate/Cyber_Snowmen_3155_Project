@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="User login">
+        <title>Login</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='Login.css') }}">
+    </head>
+
+    <body>
+
+        <form method="POST">
+            First Name: <input type = "text" name = "f_name" placeholder="Your name"/>
+            <br>
+            Email: <input type = "text" name = "user_email" placeholder="Your email"/>
+            <br>
+            Password: <input type = "password" name = "user_password" />
+            <p><input type="submit" value="Login"/></p>
+        </form>
+
+    </body>
+
+
+</html>
