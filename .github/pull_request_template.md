@@ -1,4 +1,6 @@
-### All Submissions:
+# **WAIT**
 
-* [ ] Don't check me.
-* [ ] Have you checked to ensure there aren't other open [Pull Requests](https://github.com/BSeate/Cyber_Snowmen_3155_Project/pulls) for the same update/change?
+## **Pull requests should only be used when a feature is complete and to delete the feature branch.**
+
+__By submitting this PR for review, you're sure the feature is complete__
+__and the corresponding branch is ready to be removed__
