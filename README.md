@@ -5,3 +5,6 @@
 
 ## Week 2
 **The team is coming together, all agree this will be the greatest application to ever exist**
+
+## Week 3
+**The halfway point of the project, spirits might be starting to plateau...** :eyes:
