@@ -17,9 +17,15 @@
     </head>
     <body>
 
-        <h1>Welcome {{user.full_name}} to the 49er Notes App!</h1>
+        <h1>Welcome {{user.full_name}} to the 49er Events App!</h1>
 
-        <h2>Use this site to maintain and organize your notes.</h2>
+        <h2>Use this site to create and RSVP to nearby events.</h2>
+        <h1>
+            <form method = "post">
+                Search for event: <input type = "text" name = "event" />
+                <input type = "submit" value = "Search" />
+            </form>
+        </h1>
 
         <h3>Course notes</h3>
 

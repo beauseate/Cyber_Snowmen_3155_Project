@@ -1,3 +1,4 @@
+import datetime
 import os  # os is used to get environment variables IP & PORT
 from flask import Flask  # Flask is the web app that we will customize
 from flask import render_template
@@ -22,18 +23,27 @@ errorDetails = {'HasError': False, 'Message': None}
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        searchEvent = request.form['event']
+        eventExists = Event.query.filter_by(name=searchEvent).first()
+        if eventExists:
+            eventID = eventExists.event_id
+            return redirect(url_for('get_event', e_id=eventID))
     if logDetails['LoggedIn']:
         return render_template('Home.html', user=logDetails.get('User'))
     else:
         return render_template('Home.html', user=None)
+
+
 @app.route('/events/<e_id>')
 def get_event(e_id):
-    event = Event.query().filter_by(event_id=e_id).one()
-    user = "Test User"
-    return render_template('EventInfo.html',user=user,event=event)
+    event = db.session.query(Event).filter_by(event_id=e_id).one()
+    user = event.user
+    return render_template('EventInfo.html', user=user, event=event)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
@@ -43,7 +53,7 @@ def registration():
         password = request.form['user_password']
         validation = validate_credentials(userEmail, name, password)
         if validation.get('HasError'):
-            return render_template('Registration.html', error = errorDetails)
+            return render_template('Registration.html', error=errorDetails)
         newUser = User(userEmail, name, password)
         db.session.add(newUser)
         db.session.commit()
@@ -52,7 +62,8 @@ def registration():
         logDetails['LoggedIn'] = True
         return redirect(url_for('index', user=currentUser))
     else:
-        return render_template('Registration.html', error = errorDetails)
+        return render_template('Registration.html', error=errorDetails)
+
 
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
