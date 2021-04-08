@@ -12,8 +12,8 @@ nav a {
   display: block;
 }
 
-/*Header CSS*/
-header {
+/*Header and Footer CSS*/
+header, footer {
   font-family: 'Courier New', monospace;
   background-color: black;
   color: black;
@@ -26,29 +26,27 @@ header {
 
 /*Page Title CSS*/
 .page-title {
+  font-size: 30px;
   color: white;
   float: left;
   margin-left: 100px;
-  padding-top: 20px;
+  padding-top: 25px;
   text-decoration: none;
 }
 
-/*Center Navbar CSS*/
+/*Nav-ul Header CSS*/
 .nav-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    text-transform: uppercase;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  text-transform: uppercase;
 }
 
 header .nav-ul ul {
-  margin: 2px;
-  padding: 10px 0;
   position: sticky;
-  width: 400px;
-  margin: 0 auto;
-  
+  text-align: center;
+  margin-left: 500px;
 }
 
 header .nav-ul li a {
@@ -58,17 +56,44 @@ header .nav-ul li a {
   padding: 10px 12px;
   margin-right: 5px;
   font-weight: bold;
+  
 }
 
-/*.nav-ul-right {
-  text-align: right;
-}*/
-
-/*CSS selectors for center navbar*/
+/*CSS selectors for header navbar*/
 header .nav-ul li a:hover, header .nav-ul li a:focus {
   opacity: 0.8;
   transition: 0.3s;
 }
+
+/*Nav-ul footer CSS*/
+footer .nav-ul ul {
+  font-size: 16px;
+  text-align: center;
+  top: 0;
+}
+
+footer .nav-ul li a {
+  text-decoration: none;
+  padding-right: 10px;
+  color: #C0C0C0;
+}
+
+/*CSS selectors for footer navbar*/
+footer .nav-ul li a:hover, footer .nav-ul li a:focus {
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+/*Copyright CSS*/
+#copyright {
+  text-align: center;
+  color: #C0C0C0;
+  font-size: 12px;
+  padding-bottom: 5px;
+}
+
+
+
 
 
 
