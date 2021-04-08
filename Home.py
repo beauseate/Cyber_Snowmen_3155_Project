@@ -6,6 +6,7 @@ from flask import redirect, url_for
 import re
 from database import db
 from models import User as User
+from models import Event as Event
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
@@ -28,9 +29,9 @@ def index():
         return render_template('Home.html', user=logDetails.get('User'))
     else:
         return render_template('Home.html', user=None)
-@app.route('/events/<event.id>')
-def get_event(event_id):
-    event = db.session.query(Event).filter_by(event_id=event_id).one()
+@app.route('/events/<e_id>')
+def get_event(e_id):
+    event = Event.query().filter_by(event_id=e_id).one()
     user = "Test User"
     return render_template('EventInfo.html',user=user,event=event)
 
@@ -52,7 +53,6 @@ def registration():
         return redirect(url_for('index', user=currentUser))
     else:
         return render_template('Registration.html', error = errorDetails)
-
 
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
