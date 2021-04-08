@@ -1,24 +1,41 @@
 <!DOCTYPE html>
+
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="User registration">
-        <title>Registration</title>
-        <!-- styles -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='Registration.css') }}">
+<head>
+	<title>Cyber Snowmen Header & Footer Template</title>
+	<!-- Meta tag for description -->
+	<meta name="description" content="header and footer">
+	<!-- Meta tag for author -->
+	<meta name="author" content="Cyber Snowmen">
+	<!-- Meta tag for character encoding -->
+	<meta charset="utf-8">
+	<!-- External Stylesheet -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+</head>
 
+<body>
+	<div class="wrapper">
+	<header>
+		<!-- Header contents -->
+		<div class="topnav">
+			<a href="#" class="page-title">Registration</a>
+			<!-- Header navigation -->
+			<nav class="nav-ul">
+				<ul class="nav-ul-center">
+					<li><a href="/index">Home</a></li>
+					<li><a href="#">My Events</a></li>
+					<li><a href="#">Favorites</a></li>
+					<li><a href="#" >Create Event</a></li>
+                    <li><a href="/register" >Register</a></li>
+					<li><a href="#" >User Login</a></li>
+					<li><a href="#" >Create </a></li><!-- idk what this is-->
+				</ul>			
+			</nav>
+		</div>
+	</header>
 
-        <nav>
-
-		<a href="/index"> Home </a> |
-		<a href="/register"> Register</a>
-
-	    </nav>
-    </head>
-
-    <body>
-        <br>
+	<main>
+		<br>
         <h1>Register</h1>
         <h2>Enter account information</h2>
         <br>
@@ -35,8 +52,27 @@
                   {% endif %}
 
         </form>
+	</main>
 
-    </body>
-
-
+	<footer>
+		<!-- Footer contents -->
+		<div class="botnav">
+			<!-- Footer navigation -->
+			<nav class="nav-ul">
+				<ul>
+					<li><a href="/index">Home</a></li>
+					<li><a href="#">My Events</a></li>
+					<li><a href="#">Favorites</a></li>
+					<li><a href="#" >Create Event</a></li>
+                    <li><a href="/register" >Register</a></li>
+					<li><a href="#" >User Login</a></li>
+					<li><a href="#" >Create </a></li><!-- idk what this is-->
+				</ul>
+			</nav>
+			<!-- Copyright -->
+			<p id="copyright">&copy; Snowmen Gang 2021</p>
+		</div>
+	</footer>
+	</div>
+</body>
 </html>
