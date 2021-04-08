@@ -1,0 +1,6 @@
+"Hopefully I can get a decent start on the feature I was assigned, being "RSVPing to an event"."
+
+With a crazy week like the one I had, I was unfortunately unable to start on the pages this week. With more free time for week this week, 
+I expect to change that statement. We worked on our sprint 3 this week and really defined our database names and helped set the final picture of the site up. 
+Getting familiar with the database system is gonna be my number one priority this week. 
+My goal is to get comfortable with flask a bit more and the fully understand how it interacts with the database that we make.
