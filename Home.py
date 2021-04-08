@@ -28,7 +28,11 @@ def index():
         return render_template('Home.html', user=logDetails.get('User'))
     else:
         return render_template('Home.html', user=None)
-
+@app.route('/events/<event.id>')
+def get_event(event_id):
+    event = db.session.query(Event).filter_by(event_id=event_id).one()
+    user = "Test User"
+    return render_template('EventInfo.html',user=user,event=event)
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
