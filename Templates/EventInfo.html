@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Event Details" content="Null">
+        <title>View an Event</title>
+        <!-- styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    </head>
+    <body>
+	<h1>Hello {{user}}!, you are viewing {{event.name}}</h1>
+	<nav>
+		<a href="/index"> Home </a> |
+		<a href="/register"> Register</a>
+	</nav>
+        <h1>{{event.name}} Details</h1>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Host</th>
+                <th>Rating</th>
+            </tr>
+            <tr>
+                <td>{{ event.desc }}</td>
+                <td>{{ event.date }}</td>
+                <td>{{ event.user}}</td>
+                <td>{{ event.rating}}</td>
+            </tr>
+        </table>
+    </body>
+</html>
