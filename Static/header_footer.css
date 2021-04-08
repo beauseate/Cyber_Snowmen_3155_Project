@@ -1,0 +1,74 @@
+/*Body CSS*/
+body {
+  margin: 0;
+  
+}
+
+nav li {
+  display: inline-block;
+}
+
+nav a {
+  display: block;
+}
+
+/*Header CSS*/
+header {
+  font-family: 'Courier New', monospace;
+  background-color: black;
+  color: black;
+  font-size: 20px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+/*Page Title CSS*/
+.page-title {
+  color: white;
+  float: left;
+  margin-left: 100px;
+  padding-top: 20px;
+  text-decoration: none;
+}
+
+/*Center Navbar CSS*/
+.nav-ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-transform: uppercase;
+}
+
+header .nav-ul ul {
+  margin: 2px;
+  padding: 10px 0;
+  position: sticky;
+  width: 400px;
+  margin: 0 auto;
+  
+}
+
+header .nav-ul li a {
+  color: black;
+  background-color: white;
+  text-decoration: none;
+  padding: 10px 12px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+/*.nav-ul-right {
+  text-align: right;
+}*/
+
+/*CSS selectors for center navbar*/
+header .nav-ul li a:hover, header .nav-ul li a:focus {
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+
+
