@@ -46,8 +46,6 @@ def get_event(e_id):
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if request.method == 'POST':
-        event = db.session.query(Event).filter_by(event_id=e_id).one()
-        id = event.id +1
         name = request.form['name']
         day = request.form['day']
         month = request.form['month']
@@ -61,22 +59,22 @@ def validate_date(day, month, year):
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Day has to be positive!'
     if month == 2:
-        if year%4==0:
-            if day >29 :
-            errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 29'
+        if year % 4 == 0 and year % 100 == 0 and year % 400 == 0:
+            if day > 29 :
+                errorDetails['HasError' ]= True
+                errorDetails['Message'] = 'Day cannot be greater than 29'
         else:
-            if day >28 :
-            errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 28'    
+            if day > 28 :
+                errorDetails['HasError' ]= True
+                errorDetails['Message'] = 'Day cannot be greater than 28'
     if month == 4 or 6 or 9 or 11:
-        if day >30 :
+        if day > 30 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 30'
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
-        if day >31 :
+        if day > 31 :
             errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 31'        
+            errorDetails['Message'] = 'Day cannot be greater than 31'
 
        
 

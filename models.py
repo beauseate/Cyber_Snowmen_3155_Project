@@ -13,7 +13,7 @@ class User(db.Model):
 
 
 class Event(db.Model):
-    event_id = db.Column("ID", db.Integer, primary_key=True)
+    event_id = db.Column("ID", db.Integer, primary_key=True, auto_increment=True)
     date = db.Column("Date", db.DateTime)
     name = db.Column("Name", db.String(75))
     rating = db.Column("Rating", db.Integer)
