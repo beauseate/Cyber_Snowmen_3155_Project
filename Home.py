@@ -59,21 +59,21 @@ def validate_date(day, month, year):
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Day has to be positive!'
     if month == 2:
-        if year % 4 == 0 and year % 100 == 0 and year % 400 == 0:
-            if day > 29 :
-                errorDetails['HasError' ]= True
+        if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+            if day > 29:
+                errorDetails['HasError' ] = True
                 errorDetails['Message'] = 'Day cannot be greater than 29'
         else:
-            if day > 28 :
-                errorDetails['HasError' ]= True
+            if day > 28:
+                errorDetails['HasError' ] = True
                 errorDetails['Message'] = 'Day cannot be greater than 28'
     if month == 4 or 6 or 9 or 11:
-        if day > 30 :
-            errorDetails['HasError' ]= True
+        if day > 30:
+            errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 30'
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
-        if day > 31 :
-            errorDetails['HasError' ]= True
+        if day > 31:
+            errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 31'
 
        
