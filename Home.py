@@ -9,6 +9,7 @@ from database import db
 from models import User as User
 from models import Event as Event
 
+
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -18,7 +19,7 @@ with app.app_context():
 
 logDetails = {'LoggedIn': False, 'User': None}
 errorDetails = {'HasError': False, 'Message': None}
-
+global loggedInUser 
 
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
@@ -33,6 +34,7 @@ def index():
             eventID = eventExists.event_id
             return redirect(url_for('get_event', e_id=eventID))
     if logDetails['LoggedIn']:
+        loggedInUser = logDetails.get('User')
         return render_template('Home.html', user=logDetails.get('User'))
     else:
         return render_template('Home.html', user=None)
@@ -54,29 +56,69 @@ def new_event():
         year = request.form['year']
         if validate_date(day, month,year).get('HasError'):
             return render_template('new_event.html', error = errorDetails)
-        
+        desc = request.form['description']
+        if length(month) == 1:
+            month = "0".concat(String(month))
+        if length(day) == 1:
+            day = "0".concat(String(day))    
+        date = month.concat("/"+String(day) +"/"+String(year))
+        newEvent = Event(id,date, name, 3,loggedInUser.full_name,0,desc )
+        db.session.add(newEvent)
+        db.session.commit()
+        return redirect(url_for('events/<e_id>', event =newEvent))
+    else:
+        return render_template('new_event.html', error=errorDetails)
+
+
 
 def validate_date(day, month, year):
+    if month < 1:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Month has to be between 01 and 12'
+        return errorDetails
+    if month > 12:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Month has to be between 01 and 12'   
+        return errorDetails 
+    if year < 2021:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'It has to be an event in the future!'    
+        return errorDetails
+    if year == 2021:
+        if month < 4:
+            errorDetails['HasError' ]= True
+            errorDetails['Message'] = 'It has to be an event in the future!'  
+            return errorDetails
     if day < 0 :
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Day has to be positive!'
+        return errorDetails
     if month == 2:
         if year%4==0:
             if day >29 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 29'
+            return errorDetails
         else:
             if day >28 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 28'    
+            return errorDetails
     if month == 4 or 6 or 9 or 11:
         if day >30 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 30'
+            return errorDetails
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
         if day >31 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 31'        
+            return errorDetails
+    else:
+        errorDetails['HasError'] = False
+        errorDetails['Message'] = ""
+        return errorDetails        
+
 
        
 
