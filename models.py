@@ -13,8 +13,13 @@ class User(db.Model):
 
 
 class Event(db.Model):
+<<<<<<< HEAD
     event_id = db.Column("ID", db.Integer, primary_key=True)
     date = db.Column("Date", db.String(10))
+=======
+    event_id = db.Column("ID", db.Integer, primary_key=True, auto_increment=True)
+    date = db.Column("Date", db.DateTime)
+>>>>>>> 4c7335300e1d0710971547fa9be9b6618811974c
     name = db.Column("Name", db.String(75))
     rating = db.Column("Rating", db.Integer)
     user = db.Column("User", db.String(50))

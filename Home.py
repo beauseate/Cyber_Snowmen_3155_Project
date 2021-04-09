@@ -48,8 +48,6 @@ def get_event(e_id):
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if request.method == 'POST':
-        event = db.session.query(Event).filter_by(event_id=e_id).one()
-        id = event.id +1
         name = request.form['name']
         day = request.form['day']
         month = request.form['month']
@@ -94,6 +92,7 @@ def validate_date(day, month, year):
         errorDetails['Message'] = 'Day has to be positive!'
         return errorDetails
     if month == 2:
+<<<<<<< HEAD
         if year%4==0:
             if day >29 :
             errorDetails['HasError' ]= True
@@ -104,12 +103,23 @@ def validate_date(day, month, year):
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 28'    
             return errorDetails
+=======
+        if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+            if day > 29:
+                errorDetails['HasError' ] = True
+                errorDetails['Message'] = 'Day cannot be greater than 29'
+        else:
+            if day > 28:
+                errorDetails['HasError' ] = True
+                errorDetails['Message'] = 'Day cannot be greater than 28'
+>>>>>>> 4c7335300e1d0710971547fa9be9b6618811974c
     if month == 4 or 6 or 9 or 11:
-        if day >30 :
-            errorDetails['HasError' ]= True
+        if day > 30:
+            errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 30'
             return errorDetails
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
+<<<<<<< HEAD
         if day >31 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 31'        
@@ -119,6 +129,11 @@ def validate_date(day, month, year):
         errorDetails['Message'] = ""
         return errorDetails        
 
+=======
+        if day > 31:
+            errorDetails['HasError' ] = True
+            errorDetails['Message'] = 'Day cannot be greater than 31'
+>>>>>>> 4c7335300e1d0710971547fa9be9b6618811974c
 
        
 
