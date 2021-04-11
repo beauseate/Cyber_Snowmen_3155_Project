@@ -55,11 +55,11 @@ def new_event():
         if validate_date(day, month,year).get('HasError'):
             return render_template('new_event.html', error = errorDetails)
         desc = request.form['description']
-        if length(month) == 1:
-            month = "0".concat(String(month))
-        if length(day) == 1:
-            day = "0".concat(String(day))    
-        date = month.concat("/"+String(day) +"/"+String(year))
+        if len(month) == 1:
+            month = "0".concat(str(month))
+        if len(day) == 1:
+            day = "0".concat(str(day))
+        date = month.concat("/"+str(day) +"/"+str(year))
         newEvent = Event(id,date, name, 3,loggedInUser.full_name,0,desc )
         db.session.add(newEvent)
         db.session.commit()
@@ -91,36 +91,22 @@ def validate_date(day, month, year):
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Day has to be positive!'
         return errorDetails
-    if month == 2:
-<<<<<<< HEAD
-        if year%4==0:
-            if day >29 :
-            errorDetails['HasError' ]= True
+
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        if day > 29:
+            errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 29'
-            return errorDetails
-        else:
-            if day >28 :
-            errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 28'    
-            return errorDetails
-=======
-        if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
-            if day > 29:
-                errorDetails['HasError' ] = True
-                errorDetails['Message'] = 'Day cannot be greater than 29'
         else:
             if day > 28:
                 errorDetails['HasError' ] = True
                 errorDetails['Message'] = 'Day cannot be greater than 28'
->>>>>>> 4c7335300e1d0710971547fa9be9b6618811974c
     if month == 4 or 6 or 9 or 11:
         if day > 30:
             errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 30'
             return errorDetails
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
-<<<<<<< HEAD
-        if day >31 :
+        if day > 31 :
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 31'        
             return errorDetails
@@ -129,12 +115,9 @@ def validate_date(day, month, year):
         errorDetails['Message'] = ""
         return errorDetails        
 
-=======
-        if day > 31:
-            errorDetails['HasError' ] = True
-            errorDetails['Message'] = 'Day cannot be greater than 31'
->>>>>>> 4c7335300e1d0710971547fa9be9b6618811974c
-
+    if day > 31:
+        errorDetails['HasError' ] = True
+        errorDetails['Message'] = 'Day cannot be greater than 31'
        
 
 
