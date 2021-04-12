@@ -8,3 +8,6 @@
 
 ## Week 3
 **The halfway point of the project, spirits might be starting to plateau...** :eyes:
+
+## Week 4
+**Hang in there, a little under a month to go**
