@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     </head>
     <body>
-	<h1>Hello {{user}}!, you are viewing {{event.name}}</h1>
+	<h1>Hello {% if user %} {{user}}! {% endif %}, you are viewing {{event.name}}</h1>
 	<nav>
 		<a href="/index"> Home </a> |
 		<a href="/register"> Register</a>

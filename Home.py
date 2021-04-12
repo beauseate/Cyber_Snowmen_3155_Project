@@ -9,19 +9,19 @@ from database import db
 from models import User as User
 from models import Event as Event
 from random import randint
-from datetime import datetime
+from flask import session
 
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'SE3155'
 db.init_app(app)
 with app.app_context():
     db.create_all()
 
 logDetails = {'LoggedIn': False, 'User': None}
 errorDetails = {'HasError': False, 'Message': None}
-global loggedInUser 
 
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
@@ -35,18 +35,20 @@ def index():
         if eventExists:
             eventID = eventExists.event_id
             return redirect(url_for('get_event', e_id=eventID))
-    if logDetails['LoggedIn']:
-        loggedInUser = logDetails.get('User')
-        return render_template('Home.html', user=logDetails.get('User'))
+    if session.get('user'):
+        return render_template('Home.html', user=session['user'])
     else:
-        return render_template('Home.html', user=None)
+        return render_template('Home.html')
 
 
 @app.route('/events/<e_id>')
 def get_event(e_id):
-    event = db.session.query(Event).filter_by(event_id=e_id).one()
-    user = event.user
-    return render_template('EventInfo.html', user=user, event=event)
+    if session.get('user'):
+        event = db.session.query(Event).filter_by(event_id=e_id).one()
+        return render_template('EventInfo.html', user=session['user'], event=event)
+    else:
+        #Only a placeholder until a login screen is added
+        return redirect(url_for('index'))
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if request.method == 'POST':
@@ -64,10 +66,10 @@ def new_event():
         dateList = [month, day, year]
         date = "/"
         date = date.join(dateList)
-        newEvent = Event(generate_eventID(),date, name, 0.0,loggedInUser.full_name,0,desc )
+        newEvent = Event(generate_eventID(),date, name, 0.0,session['user'],0,desc )
         db.session.add(newEvent)
         db.session.commit()
-        return redirect(url_for('events/<e_id>', event =newEvent))
+        return redirect(url_for('get_event', e_id = newEvent.event_id))
     else:
         return render_template('new_event.html', error=errorDetails)
 
@@ -130,10 +132,9 @@ def registration():
         newUser.user_id = generate_userID()
         db.session.add(newUser)
         db.session.commit()
-        currentUser = User.query.filter_by(email=userEmail).one()
-        logDetails['User'] = currentUser
-        logDetails['LoggedIn'] = True
-        return redirect(url_for('index', user=currentUser))
+        session['user'] = name
+        session['user_id'] = newUser.user_id
+        return redirect(url_for('index', user=session['user']))
     else:
         errorDetails['HasError'] = False
         return render_template('Registration.html', error=errorDetails)
