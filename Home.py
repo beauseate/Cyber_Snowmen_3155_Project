@@ -1,3 +1,4 @@
+import datetime
 import os  # os is used to get environment variables IP & PORT
 from flask import Flask  # Flask is the web app that we will customize
 from flask import render_template
@@ -6,6 +7,8 @@ from flask import redirect, url_for
 import re
 from database import db
 from models import User as User
+from models import Event as Event
+
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
@@ -16,18 +19,106 @@ with app.app_context():
 
 logDetails = {'LoggedIn': False, 'User': None}
 errorDetails = {'HasError': False, 'Message': None}
-
+global loggedInUser 
 
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        searchEvent = request.form['event']
+        eventExists = Event.query.filter_by(name=searchEvent).first()
+        if eventExists:
+            eventID = eventExists.event_id
+            return redirect(url_for('get_event', e_id=eventID))
     if logDetails['LoggedIn']:
+        loggedInUser = logDetails.get('User')
         return render_template('Home.html', user=logDetails.get('User'))
     else:
         return render_template('Home.html', user=None)
+
+
+@app.route('/events/<e_id>')
+def get_event(e_id):
+    event = db.session.query(Event).filter_by(event_id=e_id).one()
+    user = event.user
+    return render_template('EventInfo.html', user=user, event=event)
+@app.route('/events/create', methods=['GET', 'POST'])
+def new_event():
+    if request.method == 'POST':
+        name = request.form['name']
+        day = request.form['day']
+        month = request.form['month']
+        year = request.form['year']
+        if validate_date(day, month,year).get('HasError'):
+            return render_template('new_event.html', error = errorDetails)
+        desc = request.form['description']
+        if len(month) == 1:
+            month = "0".concat(str(month))
+        if len(day) == 1:
+            day = "0".concat(str(day))
+        date = month.concat("/"+str(day) +"/"+str(year))
+        newEvent = Event(id,date, name, 0.0,loggedInUser.full_name,0,desc )
+        db.session.add(newEvent)
+        db.session.commit()
+        return redirect(url_for('events/<e_id>', event =newEvent))
+    else:
+        return render_template('new_event.html', error=errorDetails)
+
+
+
+def validate_date(day, month, year):
+    if month < 1:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Month has to be between 01 and 12'
+        return errorDetails
+    if month > 12:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Month has to be between 01 and 12'   
+        return errorDetails 
+    if year < 2021:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'It has to be an event in the future!'    
+        return errorDetails
+    if year == 2021:
+        if month < 4:
+            errorDetails['HasError' ]= True
+            errorDetails['Message'] = 'It has to be an event in the future!'  
+            return errorDetails
+    if day < 0 :
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Day has to be positive!'
+        return errorDetails
+
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        if day > 29:
+            errorDetails['HasError' ] = True
+            errorDetails['Message'] = 'Day cannot be greater than 29'
+        else:
+            if day > 28:
+                errorDetails['HasError' ] = True
+                errorDetails['Message'] = 'Day cannot be greater than 28'
+    if month == 4 or 6 or 9 or 11:
+        if day > 30:
+            errorDetails['HasError' ] = True
+            errorDetails['Message'] = 'Day cannot be greater than 30'
+            return errorDetails
+    if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
+        if day > 31 :
+            errorDetails['HasError' ]= True
+            errorDetails['Message'] = 'Day cannot be greater than 31'        
+            return errorDetails
+    else:
+        errorDetails['HasError'] = False
+        errorDetails['Message'] = ""
+        return errorDetails        
+
+    if day > 31:
+        errorDetails['HasError' ] = True
+        errorDetails['Message'] = 'Day cannot be greater than 31'
+       
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -38,7 +129,7 @@ def registration():
         password = request.form['user_password']
         validation = validate_credentials(userEmail, name, password)
         if validation.get('HasError'):
-            return render_template('Registration.html', error = errorDetails)
+            return render_template('Registration.html', error=errorDetails)
         newUser = User(userEmail, name, password)
         db.session.add(newUser)
         db.session.commit()
@@ -47,7 +138,7 @@ def registration():
         logDetails['LoggedIn'] = True
         return redirect(url_for('index', user=currentUser))
     else:
-        return render_template('Registration.html', error = errorDetails)
+        return render_template('Registration.html', error=errorDetails)
 
 
 def validate_credentials(e, n, p):
