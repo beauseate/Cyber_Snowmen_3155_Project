@@ -43,40 +43,49 @@ def index():
 
 @app.route('/events/<e_id>')
 def get_event(e_id):
-    if session.get('user'):
-        event = db.session.query(Event).filter_by(event_id=e_id).one()
-        return render_template('EventInfo.html', user=session['user'], event=event)
+    eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
+    if session.get('user') and eventExists:
+        return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
         #Only a placeholder until a login screen is added
         return redirect(url_for('index'))
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
-    if request.method == 'POST':
-        name = request.form['name']
-        day = request.form['day']
-        month = request.form['month']
-        year = request.form['year']
-        if validate_date(day, month,year).get('HasError'):
-            return render_template('new_event.html', error = errorDetails)
-        desc = request.form['description']
-        if len(month) == 1:
-            month = "0" + month
-        if len(day) == 1:
-            day = "0" + day
-        dateList = [month, day, year]
-        date = "/"
-        date = date.join(dateList)
-        newEvent = Event(generate_eventID(),date, name, 0.0,session['user'],0,desc )
-        db.session.add(newEvent)
-        db.session.commit()
-        return redirect(url_for('get_event', e_id = newEvent.event_id))
+    if session.get('user'):
+        if request.method == 'POST':
+            name = request.form['name']
+            day = request.form['day']
+            month = request.form['month']
+            year = request.form['year']
+            desc = request.form['description']
+            if validate_date(day, month,year, desc).get('HasError'):
+                return render_template('new_event.html', error=errorDetails)
+            if len(month) == 1:
+                month = "0" + month
+            if len(day) == 1:
+                day = "0" + day
+            dateList = [month, day, year]
+            date = "/"
+            date = date.join(dateList)
+            newEvent = Event(generate_eventID(), date, name, 0.0, session['user'], 0, desc )
+            db.session.add(newEvent)
+            db.session.commit()
+            return redirect(url_for('get_event', e_id = newEvent.event_id))
+        else:
+            return render_template('new_event.html', error=errorDetails)
     else:
-        return render_template('new_event.html', error=errorDetails)
+        errorDetails['HasError'] = False
+        #Placeholder until login screen is added
+        return redirect(url_for('index'))
 
 
 
-def validate_date(day, month, year):
+def validate_date(day, month, year, desc):
     #Casted parameters to int to avoid crashing when doing comparisons
+    if day == "" or month == "" or year == "" or desc == "":
+        errorDetails['HasError'] = True
+        errorDetails['Message'] = 'Fields cannot be left blank'
+        return errorDetails
     month = int(month)
     day = int(day)
     year = int(year)
@@ -86,7 +95,7 @@ def validate_date(day, month, year):
         return errorDetails
     if year < 2021 or (year == 2021 and month < 4):
         errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'It has to be an event in the future!'    
+        errorDetails['Message'] = 'It has to be an event in the future!'
         return errorDetails
     if day < 0 or day > 31:
         errorDetails['HasError' ]= True
@@ -110,13 +119,13 @@ def validate_date(day, month, year):
     if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
         if day > 31 :
             errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 31'        
+            errorDetails['Message'] = 'Day cannot be greater than 31'
             return errorDetails
 
     errorDetails['HasError'] = False
     errorDetails['Message'] = ""
     return errorDetails
-       
+
 
 
 @app.route('/register', methods=['GET', 'POST'])
