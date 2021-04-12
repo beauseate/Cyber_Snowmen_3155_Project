@@ -60,7 +60,7 @@ def new_event():
         if len(day) == 1:
             day = "0".concat(str(day))
         date = month.concat("/"+str(day) +"/"+str(year))
-        newEvent = Event(id,date, name, 3,loggedInUser.full_name,0,desc )
+        newEvent = Event(id,date, name, 0.0,loggedInUser.full_name,0,desc )
         db.session.add(newEvent)
         db.session.commit()
         return redirect(url_for('events/<e_id>', event =newEvent))

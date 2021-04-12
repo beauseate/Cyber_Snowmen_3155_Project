@@ -15,9 +15,9 @@ class User(db.Model):
 class Event(db.Model):
 
     event_id = db.Column("ID", db.Integer, primary_key=True, auto_increment=True)
-    date = db.Column("Date", db.DateTime)
+    date = db.Column("Date", db.String(10))
     name = db.Column("Name", db.String(75))
-    rating = db.Column("Rating", db.Integer)
+    rating = db.Column("Rating", db.Float)
     user = db.Column("User", db.String(50))
     reports = db.Column("Reports", db.Integer)
     desc = db.Column("Description", db.String(500))
