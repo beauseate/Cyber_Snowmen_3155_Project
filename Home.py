@@ -1,5 +1,7 @@
 import datetime
 import os  # os is used to get environment variables IP & PORT
+
+import bcrypt
 from flask import Flask  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
@@ -72,9 +74,9 @@ def new_event():
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
         else:
+            errorDetails['HasError'] = False
             return render_template('new_event.html', error=errorDetails)
     else:
-        errorDetails['HasError'] = False
         #Placeholder until login screen is added
         return redirect(url_for('index'))
 
@@ -137,7 +139,9 @@ def registration():
         validation = validate_credentials(userEmail, name, password)
         if validation.get('HasError'):
             return render_template('Registration.html', error=errorDetails)
-        newUser = User(userEmail, name, password)
+        h_password = bcrypt.hashpw(
+            password.encode('utf-8'), bcrypt.gensalt())
+        newUser = User(userEmail, name, h_password)
         newUser.user_id = generate_userID()
         db.session.add(newUser)
         db.session.commit()
