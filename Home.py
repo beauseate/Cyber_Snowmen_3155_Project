@@ -8,6 +8,7 @@ import re
 from database import db
 from models import User as User
 from models import Event as Event
+from random import randint
 
 
 app = Flask(__name__)  # create an app
@@ -60,7 +61,7 @@ def new_event():
         if len(day) == 1:
             day = "0".concat(str(day))
         date = month.concat("/"+str(day) +"/"+str(year))
-        newEvent = Event(id,date, name, 0.0,loggedInUser.full_name,0,desc )
+        newEvent = Event(generate_eventID(),date, name, 0.0,loggedInUser.full_name,0,desc )
         db.session.add(newEvent)
         db.session.commit()
         return redirect(url_for('events/<e_id>', event =newEvent))
@@ -131,6 +132,7 @@ def registration():
         if validation.get('HasError'):
             return render_template('Registration.html', error=errorDetails)
         newUser = User(userEmail, name, password)
+        newUser.user_id = generate_userID()
         db.session.add(newUser)
         db.session.commit()
         currentUser = User.query.filter_by(email=userEmail).one()
@@ -169,6 +171,24 @@ def validate_credentials(e, n, p):
         errorDetails['HasError'] = False
         errorDetails['Message'] = ""
         return errorDetails
+def generate_userID():
+    #Generate 4 digit number for userID and ensure that all users have unique IDs
+    id = randint(1000, 9999)
+    idTaken = User.query.filter_by(user_id=id).first()
+    while idTaken:
+        id = randint(1000, 9999)
+        idTaken = User.query.filter_by(user_id=id).first()
+    return id
+def generate_eventID():
+    #Generate 6 digit number for eventID and ensure that all events have unique IDs
+    id = randint(100000, 999999)
+    idTaken = Event.query.filter_by(event_id=id).first()
+    while idTaken:
+        id = randint(100000, 999999)
+        idTaken = Event.query.filter_by(event_id=id).first()
+    return id
+
+
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
