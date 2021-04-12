@@ -19,3 +19,10 @@ Scenario: I tried to delete an event I already deleted
     Then a message appears 
     And the user notified it doesn't exists
         
+    Given my event has been deleted or does not exists
+    When I try to delete
+    Then a message appears 
+    And the user notified it doesn't exists
+    
+Background: 
+    Given User loged in
