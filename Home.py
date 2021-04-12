@@ -140,6 +140,7 @@ def registration():
         logDetails['LoggedIn'] = True
         return redirect(url_for('index', user=currentUser))
     else:
+        errorDetails['HasError'] = False
         return render_template('Registration.html', error=errorDetails)
 
 
@@ -169,7 +170,6 @@ def validate_credentials(e, n, p):
         return errorDetails
     else:
         errorDetails['HasError'] = False
-        errorDetails['Message'] = ""
         return errorDetails
 def generate_userID():
     #Generate 4 digit number for userID and ensure that all users have unique IDs
