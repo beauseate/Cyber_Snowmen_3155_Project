@@ -13,9 +13,9 @@ Scenario: I made my baseball event but its gonna storm severely so I need to can
     Then the event deletes
     And I recieve a notice
 
-    Scenario: I tried to delete an event I already deleted
-        Given my event has been deleted or does not exists
-        When I try to delete
-        Then a message appears 
-        And the user notified it doesn't exists
+Scenario: I tried to delete an event I already deleted
+    Given my event has been deleted or does not exists
+    When I try to delete
+    Then a message appears 
+    And the user notified it doesn't exists
         
