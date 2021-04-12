@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-	<title>User Registration</title>
+	<title>Create Event</title>
 	<!-- Meta tag for description -->
 	<meta name="description" content="header and footer">
 	<!-- Meta tag for author -->
@@ -18,7 +18,7 @@
 	<header>
 		<!-- Header contents -->
 		<div class="topnav">
-			<a href="#" class="page-title">Registration</a>
+			<a href="#" class="page-title">New Event</a>
 			<!-- Header navigation -->
 			<nav class="nav-ul">
 				<ul class="nav-ul-center">
@@ -34,23 +34,22 @@
 	</header>
 
 	<main>
-		<br>
-        <h1>Register</h1>
-        <h2>Enter account information</h2>
-        <br>
-        <form method="post">
-            Name: <input type = "text" name = "full_name" />
-            <br>
-            Email: <input type = "text" name = "user_email" />
-            <br>
-            Password: <input type = "password" name = "user_password" />
-            <p><input type="submit" value="Register"/></p>
+		<form method = "post">
+            Event Name: <input type = "text" name = "name" />
+           	<br>
+			Day: <input type = "text" name = "day" />
+			<br>
+			Month: <input type = "text" name = "month" />
+			<br>
+			Year: <input type = "text" name = "year" />
+			<br>
+			Enter a description for your event: <input type = "text" name = "description" />
+			<input type="submit" value="Create"/>
 
-                 {% if error.HasError %}
-                    <h3> {{ error.Message }}  </h3>
-                  {% endif %}
 
         </form>
+
+        
 	</main>
 
 	<footer>

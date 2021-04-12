@@ -9,6 +9,7 @@ from database import db
 from models import User as User
 from models import Event as Event
 from random import randint
+from datetime import datetime
 
 
 app = Flask(__name__)  # create an app
@@ -57,10 +58,12 @@ def new_event():
             return render_template('new_event.html', error = errorDetails)
         desc = request.form['description']
         if len(month) == 1:
-            month = "0".concat(str(month))
+            month = "0" + month
         if len(day) == 1:
-            day = "0".concat(str(day))
-        date = month.concat("/"+str(day) +"/"+str(year))
+            day = "0" + day
+        dateList = [month, day, year]
+        date = "/"
+        date = date.join(dateList)
         newEvent = Event(generate_eventID(),date, name, 0.0,loggedInUser.full_name,0,desc )
         db.session.add(newEvent)
         db.session.commit()
@@ -71,36 +74,32 @@ def new_event():
 
 
 def validate_date(day, month, year):
-    if month < 1:
+    #Casted parameters to int to avoid crashing when doing comparisons
+    month = int(month)
+    day = int(day)
+    year = int(year)
+    if month < 1 or month > 12:
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Month has to be between 01 and 12'
         return errorDetails
-    if month > 12:
-        errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'Month has to be between 01 and 12'   
-        return errorDetails 
-    if year < 2021:
+    if year < 2021 or (year == 2021 and month < 4):
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'It has to be an event in the future!'    
         return errorDetails
-    if year == 2021:
-        if month < 4:
-            errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'It has to be an event in the future!'  
-            return errorDetails
-    if day < 0 :
+    if day < 0 or day > 31:
         errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'Day has to be positive!'
+        errorDetails['Message'] = 'Day must be between 0 and 31'
         return errorDetails
-
     if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
         if day > 29:
             errorDetails['HasError' ] = True
             errorDetails['Message'] = 'Day cannot be greater than 29'
+            return errorDetails
         else:
             if day > 28:
                 errorDetails['HasError' ] = True
                 errorDetails['Message'] = 'Day cannot be greater than 28'
+                return errorDetails
     if month == 4 or 6 or 9 or 11:
         if day > 30:
             errorDetails['HasError' ] = True
@@ -111,14 +110,10 @@ def validate_date(day, month, year):
             errorDetails['HasError' ]= True
             errorDetails['Message'] = 'Day cannot be greater than 31'        
             return errorDetails
-    else:
-        errorDetails['HasError'] = False
-        errorDetails['Message'] = ""
-        return errorDetails        
 
-    if day > 31:
-        errorDetails['HasError' ] = True
-        errorDetails['Message'] = 'Day cannot be greater than 31'
+    errorDetails['HasError'] = False
+    errorDetails['Message'] = ""
+    return errorDetails
        
 
 
