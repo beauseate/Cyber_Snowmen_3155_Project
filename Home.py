@@ -88,9 +88,14 @@ def validate_date(day, month, year, desc):
         errorDetails['HasError'] = True
         errorDetails['Message'] = 'Fields cannot be left blank'
         return errorDetails
-    month = int(month)
-    day = int(day)
-    year = int(year)
+    try:
+        month = int(month)
+        day = int(day)
+        year = int(year)
+    except ValueError:
+        errorDetails['HasError'] = True
+        errorDetails['Message'] = 'Date fields must be numerical'
+        return errorDetails
     if month < 1 or month > 12:
         errorDetails['HasError' ]= True
         errorDetails['Message'] = 'Month has to be between 01 and 12'
