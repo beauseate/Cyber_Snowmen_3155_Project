@@ -45,9 +45,10 @@
 			<br>
 			Enter a description for your event: <input type = "text" name = "description" />
 			<input type="submit" value="Create"/>
-
+			{% if error %}
 			{% if error.HasError %}
                     <h3> {{ error.Message }}  </h3>
+			{% endif %}
 			{% endif %}
 
 

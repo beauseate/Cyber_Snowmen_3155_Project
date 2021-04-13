@@ -45,10 +45,11 @@
             <br>
             Password: <input type = "password" name = "user_password" />
             <p><input type="submit" value="Register"/></p>
-
+				{% if error %}
                  {% if error.HasError %}
                     <h3> {{ error.Message }}  </h3>
                   {% endif %}
+				{% endif %}
 
         </form>
 	</main>

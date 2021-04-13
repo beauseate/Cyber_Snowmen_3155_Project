@@ -60,7 +60,7 @@ def new_event():
             month = request.form['month']
             year = request.form['year']
             desc = request.form['description']
-            if validate_date(day, month,year, desc).get('HasError'):
+            if validate_input(name, day, month,year, desc).get('HasError'):
                 return render_template('new_event.html', error=errorDetails)
             if len(month) == 1:
                 month = "0" + month
@@ -74,66 +74,10 @@ def new_event():
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
         else:
-            errorDetails['HasError'] = False
-            return render_template('new_event.html', error=errorDetails)
+            return render_template('new_event.html')
     else:
         #Placeholder until login screen is added
         return redirect(url_for('index'))
-
-
-
-def validate_date(day, month, year, desc):
-    #Casted parameters to int to avoid crashing when doing comparisons
-    if day == "" or month == "" or year == "" or desc == "":
-        errorDetails['HasError'] = True
-        errorDetails['Message'] = 'Fields cannot be left blank'
-        return errorDetails
-    try:
-        month = int(month)
-        day = int(day)
-        year = int(year)
-    except ValueError:
-        errorDetails['HasError'] = True
-        errorDetails['Message'] = 'Date fields must be numerical'
-        return errorDetails
-    if month < 1 or month > 12:
-        errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'Month has to be between 01 and 12'
-        return errorDetails
-    if year < 2021 or (year == 2021 and month < 4):
-        errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'It has to be an event in the future!'
-        return errorDetails
-    if day < 0 or day > 31:
-        errorDetails['HasError' ]= True
-        errorDetails['Message'] = 'Day must be between 0 and 31'
-        return errorDetails
-    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
-        if day > 29:
-            errorDetails['HasError' ] = True
-            errorDetails['Message'] = 'Day cannot be greater than 29'
-            return errorDetails
-        else:
-            if day > 28:
-                errorDetails['HasError' ] = True
-                errorDetails['Message'] = 'Day cannot be greater than 28'
-                return errorDetails
-    if month == 4 or 6 or 9 or 11:
-        if day > 30:
-            errorDetails['HasError' ] = True
-            errorDetails['Message'] = 'Day cannot be greater than 30'
-            return errorDetails
-    if month == 1 or 3 or 5 or 7 or 8 or 10 or 12:
-        if day > 31 :
-            errorDetails['HasError' ]= True
-            errorDetails['Message'] = 'Day cannot be greater than 31'
-            return errorDetails
-
-    errorDetails['HasError'] = False
-    errorDetails['Message'] = ""
-    return errorDetails
-
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
@@ -154,10 +98,13 @@ def registration():
         session['user_id'] = newUser.user_id
         return redirect(url_for('index', user=session['user']))
     else:
-        errorDetails['HasError'] = False
-        return render_template('Registration.html', error=errorDetails)
-
-
+        #errorDetails['HasError'] = False
+        return render_template('Registration.html')
+@app.route('/logout')
+def logout():
+    if session.get('user'):
+        session.clear()
+    return redirect(url_for('index'))
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
         errorDetails['HasError'] = True
@@ -201,6 +148,55 @@ def generate_eventID():
         id = randint(100000, 999999)
         idTaken = Event.query.filter_by(event_id=id).first()
     return id
+def validate_input(name, day, month, year, desc):
+    if name == "" or day == "" or month == "" or year == "" or desc == "":
+        errorDetails['HasError'] = True
+        errorDetails['Message'] = 'Fields cannot be left blank'
+        return errorDetails
+    try:
+        month = int(month)
+        day = int(day)
+        year = int(year)
+    except ValueError:
+        errorDetails['HasError'] = True
+        errorDetails['Message'] = 'Date fields must be numerical'
+        return errorDetails
+    if month < 1 or month > 12:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Month has to be between 01 and 12'
+        return errorDetails
+    if year < 2021 or (year == 2021 and month < 4):
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'It has to be an event in the future!'
+        return errorDetails
+    if day < 0 or day > 31:
+        errorDetails['HasError' ]= True
+        errorDetails['Message'] = 'Day must be between 0 and 31'
+        return errorDetails
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        if day > 29:
+            errorDetails['HasError' ] = True
+            errorDetails['Message'] = 'Day cannot be greater than 29'
+            return errorDetails
+        else:
+            if day > 28:
+                errorDetails['HasError' ] = True
+                errorDetails['Message'] = 'Day cannot be greater than 28'
+                return errorDetails
+    if month == 4 or month == 6 or month == 9 or month == 11:
+        if day > 30:
+            errorDetails['HasError' ] = True
+            errorDetails['Message'] = 'Day cannot be greater than 30'
+            return errorDetails
+    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
+        if day > 31 :
+            errorDetails['HasError' ]= True
+            errorDetails['Message'] = 'Day cannot be greater than 31'
+            return errorDetails
+
+    errorDetails['HasError'] = False
+    errorDetails['Message'] = ""
+    return errorDetails
 
 
 
