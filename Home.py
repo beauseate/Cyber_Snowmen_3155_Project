@@ -1,4 +1,3 @@
-import datetime
 import os  # os is used to get environment variables IP & PORT
 
 import bcrypt
@@ -42,7 +41,6 @@ def index():
     else:
         return render_template('Home.html')
 
-
 @app.route('/events/<e_id>')
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
@@ -51,6 +49,7 @@ def get_event(e_id):
     else:
         #Only a placeholder until a login screen is added
         return redirect(url_for('index'))
+
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if session.get('user'):
@@ -100,11 +99,13 @@ def registration():
     else:
         #errorDetails['HasError'] = False
         return render_template('Registration.html')
+
 @app.route('/logout')
 def logout():
     if session.get('user'):
         session.clear()
     return redirect(url_for('index'))
+
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
         errorDetails['HasError'] = True
@@ -132,6 +133,7 @@ def validate_credentials(e, n, p):
     else:
         errorDetails['HasError'] = False
         return errorDetails
+
 def generate_userID():
     #Generate 4 digit number for userID and ensure that all users have unique IDs
     id = randint(1000, 9999)
@@ -140,6 +142,7 @@ def generate_userID():
         id = randint(1000, 9999)
         idTaken = User.query.filter_by(user_id=id).first()
     return id
+
 def generate_eventID():
     #Generate 6 digit number for eventID and ensure that all events have unique IDs
     id = randint(100000, 999999)
@@ -148,6 +151,7 @@ def generate_eventID():
         id = randint(100000, 999999)
         idTaken = Event.query.filter_by(event_id=id).first()
     return id
+
 def validate_input(name, day, month, year, desc):
     if name == "" or day == "" or month == "" or year == "" or desc == "":
         errorDetails['HasError'] = True
