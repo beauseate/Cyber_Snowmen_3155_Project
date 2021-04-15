@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-	<title>Cyber Snowmen Header & Footer Template</title>
+	<title>Homepage</title>
 	<!-- Meta tag for description -->
 	<meta name="description" content="header and footer">
 	<!-- Meta tag for author -->
@@ -26,17 +26,17 @@
 					<li><a href="/index">Home</a></li>
 					<li><a href="#">My Events</a></li>
 					<li><a href="#">Favorites</a></li>
-					<li><a href="#" >Create Event</a></li>
+					<li><a href="/events/create" >Create Event</a></li>
                     <li><a href="/register" >Register</a></li>
 					<li><a href="#" >User Login</a></li>
-					<li><a href="#" >Create </a></li><!-- idk what this is-->
+
 				</ul>			
 			</nav>
 		</div>
 	</header>
 
 	<main>
-		<h1>Welcome {{user.full_name}} to the 49er Events App!</h1>
+		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>
 
         <h2>Use this site to create and RSVP to nearby events.</h2>
         <h1>
@@ -56,10 +56,9 @@
 					<li><a href="/index">Home</a></li>
 					<li><a href="#">My Events</a></li>
 					<li><a href="#">Favorites</a></li>
-					<li><a href="#" >Create Event</a></li>
+					<li><a href="/events/create" >Create Event</a></li>
 					<li><a href="/register" >Register</a></li>
 					<li><a href="#" >User Login</a></li>
-					<li><a href="#" >Create </a></li><!-- idk what this is-->
 				</ul>
 			</nav>
 			<!-- Copyright -->
