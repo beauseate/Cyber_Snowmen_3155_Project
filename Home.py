@@ -41,10 +41,15 @@ def index():
     else:
         return render_template('Home.html')
 
-@app.route('/events/<e_id>')
+@app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
+        if request.method == 'POST':
+            eventExists.likes += 1
+            db.session.commit()
+            #Redirecting to homepage is a placeholder for now
+            return redirect(url_for('index'))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
         #Only a placeholder until a login screen is added
@@ -68,7 +73,8 @@ def new_event():
             dateList = [month, day, year]
             date = "/"
             date = date.join(dateList)
-            newEvent = Event(generate_eventID(), date, name, 0.0, session['user'], 0, desc )
+            user = session['user']
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
             db.session.add(newEvent)
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
@@ -89,8 +95,7 @@ def registration():
             return render_template('Registration.html', error=errorDetails)
         h_password = bcrypt.hashpw(
             password.encode('utf-8'), bcrypt.gensalt())
-        newUser = User(userEmail, name, h_password)
-        newUser.user_id = generate_userID()
+        newUser = User(generate_userID(), userEmail, name, h_password)
         db.session.add(newUser)
         db.session.commit()
         session['user'] = name
