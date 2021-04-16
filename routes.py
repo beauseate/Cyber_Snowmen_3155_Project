@@ -11,8 +11,7 @@ from models import User as User
 from models import Event as Event
 from random import randint
 from flask import session
-from forms import RegisterForm, LoginForm
-
+from forms import RegisterForm, LoginForm, NewEventForm
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
@@ -62,7 +61,8 @@ def get_event(e_id):
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if session.get('user'):
-        if request.method == 'POST':
+        eventForm = NewEventForm()
+        if request.method == 'POST' and eventForm.validate_on_submit():
             name = request.form['name']
             day = request.form['day']
             month = request.form['month']
@@ -214,7 +214,6 @@ def generate_userID():
         id = randint(1000, 9999)
         idTaken = User.query.filter_by(user_id=id).first()
     return id
-
 
 def generate_eventID():
     #Generate 6 digit number for eventID and ensure that all events have unique IDs
