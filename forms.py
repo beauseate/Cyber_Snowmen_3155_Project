@@ -62,39 +62,28 @@ class NewEventForm(FlaskForm):
     desc = StringField('Description', validators=[DataRequired("Please enter a description for the event."),
                                                   Length(1, 500)])
     date = DateField('Date (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
-                     validators=[DataRequired("Please enter a date.")])
+                     validators=[DataRequired("Please enter a valid date.")])
 
     submit = SubmitField('Submit')
 
     def validate_date(self, field):
         # Get form date as a String and assign its value to year, month, and day for validation
         tempDate = field.data.strftime('%Y-%m-%d')
-        if len(tempDate) != 10:
-            raise ValidationError('Date must be 10 characters in length')
         year = tempDate[0:4]
         month = tempDate[5:7]
         day = tempDate[8:10]
-        try:
-            month = int(month)
-            day = int(day)
-            year = int(year)
-        except ValueError:
-            raise ValidationError(tempDate)
-        if month < 1 or month > 12:
-            raise ValidationError('Month has to be between 01 and 12')
+
+        # Cast date values into int for validation
+        month = int(month)
+        day = int(day)
+        year = int(year)
+        # Ensure that events are created only for future dates
         if year < 2021 or (year == 2021 and month < 4):
             raise ValidationError('It has to be an event in the future!')
-        if day < 0 or day > 31:
-            raise ValidationError('Day must be between 0 and 31')
+        # Check for valid Feb dates on leap years
         if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
-            if day > 29:
+            if month == 2 and day > 29:
                 raise ValidationError('Day cannot be greater than 29')
-            else:
-                if day > 28:
-                    raise ValidationError('Day cannot be greater than 28')
-        if month == 4 or month == 6 or month == 9 or month == 11:
-            if day > 30:
-                raise ValidationError('Day cannot be greater than 30')
-        if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
-            if day > 31:
-                raise ValidationError('Day cannot be greater than 31')
+        else:
+            if month == 2 and day > 28:
+                raise ValidationError('Day cannot be greater than 28')
