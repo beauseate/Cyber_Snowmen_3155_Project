@@ -50,12 +50,10 @@ def get_event(e_id):
         if request.method == 'POST' and request.form['upvote']:
             eventExists.likes += 1
             db.session.commit()
-            #Redirecting to homepage is a placeholder for now
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
-        #Only a placeholder until a login screen is added
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 
 @app.route('/events/create', methods=['GET', 'POST'])
@@ -63,19 +61,19 @@ def new_event():
     if session.get('user'):
         eventForm = NewEventForm()
         if request.method == 'POST' and eventForm.validate_on_submit():
-            name = request.form['Event_Name']
-            date = request.form['Date'].strftime('%Y-%m-d')
-            desc = request.form['Description']
+            name = request.form['name']
+            date = request.form['date']
+            desc = request.form['desc']
             user = session['user']
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0)
             db.session.add(newEvent)
             db.session.commit()
             return redirect(url_for('get_event', e_id=newEvent.event_id))
         else:
-            return render_template('new_event.html')
+            # Display new_event view if something goes wrong
+            return render_template('new_event.html', form=eventForm)
     else:
-        #Placeholder until login screen is added
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 
 @app.route('/register', methods=['POST', 'GET'])
