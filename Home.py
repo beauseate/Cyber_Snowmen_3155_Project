@@ -74,7 +74,7 @@ def new_event():
             date = "/"
             date = date.join(dateList)
             user = session['user']
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc,0)
             db.session.add(newEvent)
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
