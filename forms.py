@@ -62,14 +62,15 @@ class NewEventForm(FlaskForm):
     desc = StringField('Description', validators=[DataRequired("Please enter a description for the event."),
                                                   Length(1, 500)])
     date = DateField('Date (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
-                     validators=[DataRequired("Please enter a date."), Length(10, 10, message="Date must be 10 "
-                                                                                              "characters in length.")])
+                     validators=[DataRequired("Please enter a date.")])
 
     submit = SubmitField('Submit')
 
     def validate_date(self, field):
         # Get form date as a String and assign its value to year, month, and day for validation
-        tempDate = field.data.strftime('%Y-%m-d')
+        tempDate = field.data.strftime('%Y-%m-%d')
+        if len(tempDate) != 10:
+            raise ValidationError('Date must be 10 characters in length')
         year = tempDate[0:4]
         month = tempDate[5:7]
         day = tempDate[8:10]
@@ -78,7 +79,7 @@ class NewEventForm(FlaskForm):
             day = int(day)
             year = int(year)
         except ValueError:
-            raise ValidationError('Date must be numerical')
+            raise ValidationError(tempDate)
         if month < 1 or month > 12:
             raise ValidationError('Month has to be between 01 and 12')
         if year < 2021 or (year == 2021 and month < 4):
