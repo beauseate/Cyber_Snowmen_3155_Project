@@ -48,7 +48,7 @@
 		{% for event in events %}
         <table>
             <tr>
-                <th><a href="{{url_for('get_event', event.id)}}">Event:</a></th>
+                <th><a href="/events/{{ event.event_id}} }">Event:</a></th>
                 <th>Date</th>
                 <th>Created by:</th>
                 <th>Rating</th>
