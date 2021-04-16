@@ -47,11 +47,11 @@ def index():
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
-        if request.method == 'POST':
+        if request.method == 'POST' and request.form['upvote']:
             eventExists.likes += 1
             db.session.commit()
             #Redirecting to homepage is a placeholder for now
-            return redirect(url_for('index'))
+            return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
         #Only a placeholder until a login screen is added

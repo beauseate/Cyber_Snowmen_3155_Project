@@ -4,6 +4,7 @@ from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError
 from models import User
 from database import db
+import re
 
 
 class RegisterForm(FlaskForm):
@@ -14,11 +15,10 @@ class RegisterForm(FlaskForm):
 
     last_name = StringField('Last Name', validators=[Length(1, 20)])
 
-    email = StringField('Email', [
-        Email(message='Not a valid email address.'),
+    email = StringField('Email', validators=[
         DataRequired()])
 
-    password = PasswordField('Password', [
+    password = PasswordField('Password', validators=[
         DataRequired(message="Please enter a password."),
         EqualTo('confirmPassword', message='Passwords must match')
     ])
@@ -31,17 +31,18 @@ class RegisterForm(FlaskForm):
     def validate_email(self, field):
         if db.session.query(User).filter_by(email=field.data).count() != 0:
             raise ValidationError('Username already in use.')
+        if re.search('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', field.data) is None:
+            raise ValidationError('Not a valid email address.')
 
 
 class LoginForm(FlaskForm):
     class Meta:
         csrf = False
 
-    email = StringField('Email', [
-        Email(message='Not a valid email address.'),
+    email = StringField('Email', validators=[
         DataRequired()])
 
-    password = PasswordField('Password', [
+    password = PasswordField('Password', validators=[
         DataRequired(message="Please enter a password.")])
 
     submit = SubmitField('Submit')
@@ -49,16 +50,20 @@ class LoginForm(FlaskForm):
     def validate_email(self, field):
         if db.session.query(User).filter_by(email=field.data).count() == 0:
             raise ValidationError('Incorrect username or password.')
+        if re.search('^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$', field.data) is None:
+            raise ValidationError('Not a valid email address.')
 
 
 class NewEventForm(FlaskForm):
     class Meta:
         csrf = False
 
-    name = StringField('Event_Name', [DataRequired("Please enter a name for the event,"), Length(1, 500)])
-    desc = StringField('Description', [DataRequired("Please enter a description for the event,"), Length(1, 500)])
+    name = StringField('Event_Name', validators=[DataRequired("Please enter a name for the event."), Length(1, 500)])
+    desc = StringField('Description', validators=[DataRequired("Please enter a description for the event."),
+                                                  Length(1, 500)])
     date = DateField('Date (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
-                     validators=[DataRequired("Please enter a date."), Length(10)])
+                     validators=[DataRequired("Please enter a date."), Length(10, 10, message="Date must be 10 "
+                                                                                              "characters in length.")])
 
     submit = SubmitField('Submit')
 
