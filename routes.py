@@ -54,7 +54,11 @@ def get_event(e_id):
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
         return redirect(url_for('login'))
-
+@app.route('/events/list',methods=['GET'])
+def listEvents():
+    events=db.session.query(Event).filter_by(event_id= True).all
+    return render_template('EventList.html',  events=events)
+    
 
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
