@@ -63,13 +63,11 @@ def new_event():
     if session.get('user'):
         eventForm = NewEventForm()
         if request.method == 'POST' and eventForm.validate_on_submit():
-            name = request.form['name']
-            day = request.form['day']
-            month = request.form['month']
-            year = request.form['year']
-            desc = request.form['description']
-            if validate_input(name, day, month,year, desc).get('HasError'):
-                return render_template('new_event.html', error=errorDetails)
+            name = request.form['Event_Name']
+            day = request.form['Date'].strftime('%d')
+            month = request.form['Date'].strftime('%m')
+            year = request.form['Date'].strftime('%Y')
+            desc = request.form['Description']
             if len(month) == 1:
                 month = "0" + month
             if len(day) == 1:
