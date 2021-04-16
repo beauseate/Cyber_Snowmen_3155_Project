@@ -30,16 +30,18 @@ errorDetails = {'HasError': False, 'Message': None}
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        searchEvent = request.form['event']
-        eventExists = Event.query.filter_by(name=searchEvent).first()
-        if eventExists:
-            eventID = eventExists.event_id
-            return redirect(url_for('get_event', e_id=eventID))
+    #commenting out since this hasn't been implemented yet. works without it.
+    # if request.method == 'POST':
+    #     searchEvent = request.form['event']
+    #     eventExists = Event.query.filter_by(name=searchEvent).first()
+    #     if eventExists:
+    #         eventID = eventExists.event_id
+    #         return redirect(url_for('get_event', e_id=eventID))
     if session.get('user'):
         return render_template('Home.html', user=session['user'])
     else:
         return render_template('Home.html')
+
 
 @app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
@@ -54,6 +56,7 @@ def get_event(e_id):
     else:
         #Only a placeholder until a login screen is added
         return redirect(url_for('index'))
+
 
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
@@ -74,7 +77,7 @@ def new_event():
             date = "/"
             date = date.join(dateList)
             user = session['user']
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc,0)
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
             db.session.add(newEvent)
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
@@ -83,6 +86,7 @@ def new_event():
     else:
         #Placeholder until login screen is added
         return redirect(url_for('index'))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
@@ -105,12 +109,24 @@ def registration():
         #errorDetails['HasError'] = False
         return render_template('Registration.html')
 
+
 @app.route('/logout')
 def logout():
     if session.get('user'):
         session.clear()
     return redirect(url_for('index'))
 
+
+##login goes here
+
+
+
+
+
+
+
+#could probably get rid of this in the future:
+#i believe we have built in validation with WTForms
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
         errorDetails['HasError'] = True
@@ -139,6 +155,7 @@ def validate_credentials(e, n, p):
         errorDetails['HasError'] = False
         return errorDetails
 
+
 def generate_userID():
     #Generate 4 digit number for userID and ensure that all users have unique IDs
     id = randint(1000, 9999)
@@ -147,6 +164,7 @@ def generate_userID():
         id = randint(1000, 9999)
         idTaken = User.query.filter_by(user_id=id).first()
     return id
+
 
 def generate_eventID():
     #Generate 6 digit number for eventID and ensure that all events have unique IDs
@@ -157,6 +175,8 @@ def generate_eventID():
         idTaken = Event.query.filter_by(event_id=id).first()
     return id
 
+#could probably get rid of this in the future:
+#i believe we have built in validation with WTForms
 def validate_input(name, day, month, year, desc):
     if name == "" or day == "" or month == "" or year == "" or desc == "":
         errorDetails['HasError'] = True
@@ -206,6 +226,9 @@ def validate_input(name, day, month, year, desc):
     errorDetails['HasError'] = False
     errorDetails['Message'] = ""
     return errorDetails
+
+
+
 
 
 
