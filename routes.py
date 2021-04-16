@@ -89,26 +89,54 @@ def new_event():
         return redirect(url_for('index'))
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def registration():
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    form = RegisterForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        # salt and hash password
+        h_password = bcrypt.hashpw(
+            request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        # get entered user data
+        firstName = request.form['first_name']
+        lastName = request.form['last_name']
+        email = request.form['email']
+        # create user model
+        newUser = User(generate_userID(), email, firstName, lastName, h_password)
+        # add user to database and commit
+        db.session.add(newUser)
+        db.session.commit()
+        # save the user's name to the session
+        session['user'] = firstName
+        session['user_id'] = newUser.user_id  # access id value from user model of this newly added user
+        # show user dashboard view
+        return redirect(url_for('index', user=session['user']))
+
+    # something went wrong - display register view
+    return render_template('Registration.html', form=form)
+    '''
+    OLD Registration
+
     if request.method == 'POST':
         userEmail = request.form['user_email']
-        name = request.form['full_name']
+        firstName = request.form['first_name']
+        lastName = request.form['last_name']
         password = request.form['user_password']
-        validation = validate_credentials(userEmail, name, password)
+        validation = validate_credentials(userEmail, firstName, lastName, password)
         if validation.get('HasError'):
             return render_template('Registration.html', error=errorDetails)
         h_password = bcrypt.hashpw(
             password.encode('utf-8'), bcrypt.gensalt())
-        newUser = User(generate_userID(), userEmail, name, h_password)
+        newUser = User(generate_userID(), userEmail, firstName, lastName, h_password)
         db.session.add(newUser)
         db.session.commit()
-        session['user'] = name
+        session['user'] = firstName
         session['user_id'] = newUser.user_id
         return redirect(url_for('index', user=session['user']))
     else:
         #errorDetails['HasError'] = False
         return render_template('Registration.html')
+        '''
 
 
 @app.route('/logout')
@@ -129,7 +157,7 @@ def login():
         # user exists check password entered matches stored password
         if bcrypt.checkpw(request.form['password'].encode('utf-8'), the_user.password):
             # password match add user info to session
-            session['user'] = the_user.full_name
+            session['user'] = the_user.first_name
             session['user_id'] = the_user.user_id
             # render view
             return redirect(url_for('index'))
@@ -149,8 +177,8 @@ def login():
 
 #could probably get rid of this in the future:
 #i believe we have built in validation with WTForms
-def validate_credentials(e, n, p):
-    if str(e) == "" or str(n) == "" or str(p) == "":
+def validate_credentials(e, fn, ln, p):
+    if str(e) == "" or str(fn) == "" or str(ln) == "" or str(p) == "":
         errorDetails['HasError'] = True
         errorDetails['Message'] = 'Fields cannot be left empty.'
         return errorDetails
@@ -254,8 +282,8 @@ def validate_input(name, day, month, year, desc):
 
 
 
-
-app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
+if __name__ == '__main__':
+    app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
 
 # To see the web page in your web browser, go to the url,
 #   http://127.0.0.1:5000

@@ -10,9 +10,9 @@ class RegisterForm(FlaskForm):
     class Meta:
         csrf = False
 
-    firstname = StringField('First Name', validators=[Length(1, 10)])
+    first_name = StringField('First Name', validators=[Length(1, 10)])
 
-    lastname = StringField('Last Name', validators=[Length(1, 20)])
+    last_name = StringField('Last Name', validators=[Length(1, 20)])
 
     email = StringField('Email', [
         Email(message='Not a valid email address.'),

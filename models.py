@@ -4,14 +4,16 @@ from database import db
 class User(db.Model):
     user_id = db.Column("User_ID", db.Integer, primary_key=True)
     email = db.Column("Email", db.String(50))
-    full_name = db.Column("Name", db.String(75))
+    first_name = db.Column("first_name", db.String(75))
+    last_name = db.Column("Last_Name", db.String(75))
     password = db.Column("Password", db.String(255))
     events_attending = db.relationship("RSVP", backref="user", lazy=True)
 
-    def __init__(self, id, email, full_name, password):
+    def __init__(self, id, email, first_name, last_name, password):
         self.user_id = id
         self.email = email
-        self.full_name = full_name
+        self.first_name = first_name
+        self.last_name = last_name
         self.password = password
 
 class Event(db.Model):
