@@ -11,6 +11,7 @@ from models import User as User
 from models import Event as Event
 from random import randint
 from flask import session
+from forms import RegisterForm, LoginForm
 
 
 app = Flask(__name__)  # create an app
@@ -30,25 +31,33 @@ errorDetails = {'HasError': False, 'Message': None}
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        searchEvent = request.form['event']
-        eventExists = Event.query.filter_by(name=searchEvent).first()
-        if eventExists:
-            eventID = eventExists.event_id
-            return redirect(url_for('get_event', e_id=eventID))
+    #commenting out since this hasn't been implemented yet. works without it.
+    # if request.method == 'POST':
+    #     searchEvent = request.form['event']
+    #     eventExists = Event.query.filter_by(name=searchEvent).first()
+    #     if eventExists:
+    #         eventID = eventExists.event_id
+    #         return redirect(url_for('get_event', e_id=eventID))
     if session.get('user'):
         return render_template('Home.html', user=session['user'])
     else:
         return render_template('Home.html')
 
-@app.route('/events/<e_id>')
+
+@app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
+        if request.method == 'POST':
+            eventExists.likes += 1
+            db.session.commit()
+            #Redirecting to homepage is a placeholder for now
+            return redirect(url_for('index'))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     else:
         #Only a placeholder until a login screen is added
         return redirect(url_for('index'))
+
 
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
@@ -68,7 +77,8 @@ def new_event():
             dateList = [month, day, year]
             date = "/"
             date = date.join(dateList)
-            newEvent = Event(generate_eventID(), date, name, 0.0, session['user'], 0, desc )
+            user = session['user']
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
             db.session.add(newEvent)
             db.session.commit()
             return redirect(url_for('get_event', e_id = newEvent.event_id))
@@ -77,6 +87,7 @@ def new_event():
     else:
         #Placeholder until login screen is added
         return redirect(url_for('index'))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
@@ -89,8 +100,7 @@ def registration():
             return render_template('Registration.html', error=errorDetails)
         h_password = bcrypt.hashpw(
             password.encode('utf-8'), bcrypt.gensalt())
-        newUser = User(userEmail, name, h_password)
-        newUser.user_id = generate_userID()
+        newUser = User(generate_userID(), userEmail, name, h_password)
         db.session.add(newUser)
         db.session.commit()
         session['user'] = name
@@ -100,12 +110,45 @@ def registration():
         #errorDetails['HasError'] = False
         return render_template('Registration.html')
 
+
 @app.route('/logout')
 def logout():
     if session.get('user'):
         session.clear()
     return redirect(url_for('index'))
 
+
+##login goes here
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    login_form = LoginForm()
+    # validate_on_submit only validates using POST
+    if login_form.validate_on_submit():
+        # we know user exists. We can use one()
+        the_user = db.session.query(User).filter_by(email=request.form['email']).one()
+        # user exists check password entered matches stored password
+        if bcrypt.checkpw(request.form['password'].encode('utf-8'), the_user.password):
+            # password match add user info to session
+            session['user'] = the_user.full_name
+            session['user_id'] = the_user.user_id
+            # render view
+            return redirect(url_for('index'))
+
+        # password check failed
+        # set error message to alert user
+        login_form.password.errors = ["Incorrect username or password."]
+        return render_template("login.html", form=login_form)
+    else:
+        # form did not validate or GET request
+        return render_template("login.html", form=login_form)
+
+
+
+
+
+
+#could probably get rid of this in the future:
+#i believe we have built in validation with WTForms
 def validate_credentials(e, n, p):
     if str(e) == "" or str(n) == "" or str(p) == "":
         errorDetails['HasError'] = True
@@ -134,6 +177,7 @@ def validate_credentials(e, n, p):
         errorDetails['HasError'] = False
         return errorDetails
 
+
 def generate_userID():
     #Generate 4 digit number for userID and ensure that all users have unique IDs
     id = randint(1000, 9999)
@@ -142,6 +186,7 @@ def generate_userID():
         id = randint(1000, 9999)
         idTaken = User.query.filter_by(user_id=id).first()
     return id
+
 
 def generate_eventID():
     #Generate 6 digit number for eventID and ensure that all events have unique IDs
@@ -152,6 +197,8 @@ def generate_eventID():
         idTaken = Event.query.filter_by(event_id=id).first()
     return id
 
+#could probably get rid of this in the future:
+#i believe we have built in validation with WTForms
 def validate_input(name, day, month, year, desc):
     if name == "" or day == "" or month == "" or year == "" or desc == "":
         errorDetails['HasError'] = True
@@ -201,6 +248,9 @@ def validate_input(name, day, month, year, desc):
     errorDetails['HasError'] = False
     errorDetails['Message'] = ""
     return errorDetails
+
+
+
 
 
 
