@@ -64,22 +64,13 @@ def new_event():
         eventForm = NewEventForm()
         if request.method == 'POST' and eventForm.validate_on_submit():
             name = request.form['Event_Name']
-            day = request.form['Date'].strftime('%d')
-            month = request.form['Date'].strftime('%m')
-            year = request.form['Date'].strftime('%Y')
+            date = request.form['Date'].strftime('%Y-%m-d')
             desc = request.form['Description']
-            if len(month) == 1:
-                month = "0" + month
-            if len(day) == 1:
-                day = "0" + day
-            dateList = [month, day, year]
-            date = "/"
-            date = date.join(dateList)
             user = session['user']
             newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc )
             db.session.add(newEvent)
             db.session.commit()
-            return redirect(url_for('get_event', e_id = newEvent.event_id))
+            return redirect(url_for('get_event', e_id=newEvent.event_id))
         else:
             return render_template('new_event.html')
     else:

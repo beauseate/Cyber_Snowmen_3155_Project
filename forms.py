@@ -1,5 +1,3 @@
-import pandas as pd
-from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DateField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
@@ -60,18 +58,22 @@ class NewEventForm(FlaskForm):
     name = StringField('Event_Name', [DataRequired("Please enter a name for the event,"), Length(1, 500)])
     desc = StringField('Description', [DataRequired("Please enter a description for the event,"), Length(1, 500)])
     date = DateField('Date (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
-                     validators=[DataRequired("Please enter a date.")])
+                     validators=[DataRequired("Please enter a date."), Length(10)])
+
+    submit = SubmitField('Submit')
 
     def validate_date(self, field):
-        year = field.data.strftime('%Y')
-        month = field.data.strftime('%m')
-        day = field.data.strftime('d')
+        # Get form date as a String and assign its value to year, month, and day for validation
+        tempDate = field.data.strftime('%Y-%m-d')
+        year = tempDate[0:4]
+        month = tempDate[5:7]
+        day = tempDate[8:10]
         try:
             month = int(month)
             day = int(day)
             year = int(year)
         except ValueError:
-            raise ValidationError('Date cannot contain characters other than 0-9 or -')
+            raise ValidationError('Date must be numerical')
         if month < 1 or month > 12:
             raise ValidationError('Month has to be between 01 and 12')
         if year < 2021 or (year == 2021 and month < 4):
@@ -90,5 +92,3 @@ class NewEventForm(FlaskForm):
         if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
             if day > 31:
                 raise ValidationError('Day cannot be greater than 31')
-
-    submit = SubmitField('Submit')
