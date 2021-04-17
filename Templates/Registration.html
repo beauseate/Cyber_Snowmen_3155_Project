@@ -18,29 +18,90 @@
 	<header>
 		<!-- Header contents -->
 		<div class="topnav">
-			<a href="#" class="page-title">Registration</a>
+			<a href="#" class="page-title">Homepage</a>
 			<!-- Header navigation -->
 			<nav class="nav-ul">
 				<ul class="nav-ul-center">
 					<li><a href="/index">Home</a></li>
-					<li><a href="#">My Events</a></li>
-					<li><a href="#">Favorites</a></li>
+					<li><a href="#">My Events</a></li><!--will need a link to the my_events page once made -->
+					<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
 					<li><a href="/events/create" >Create Event</a></li>
-                    <li><a href="/register" >Register</a></li>
-					<li><a href="#" >User Login</a></li>
+					{% if user%}
+					<li>
+						<a href = "{{url_for('logout') }}">Logout</a>
+					</li>
+					{%else%}
+					<li><a href = "#">Sign in</a></li>
+						<li><a href = "/register">Register</a></li>
+					{% endif%}
+
 				</ul>			
 			</nav>
 		</div>
-	</header>
+	</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
 		<br>
         <h1>Register</h1>
         <h2>Enter account information</h2>
         <br>
-        <form method="post">
-            Name: <input type = "text" name = "full_name" />
+		<div class="formwrapper">
+            <h2 class="title">Register</h2>
+            <form method="POST" action="/register">
+                <div class="form-field">{{ form.first_name.label }} {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <ul class="errors">
+                        {% for error in form.first_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.last_name.label }} {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <ul class="errors">
+                        {% for error in form.last_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.email.label }} {{ form.email }}
+                    {% if form.email.errors %}
+                    <ul class="errors">
+                        {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.password.label }} {{ form.password }}
+                    {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.confirmPassword.label }} {{ form.confirmPassword }}
+                    {% if form.confirmPassword.errors %}
+                    <ul class="errors">
+                        {% for error in form.confirmPassword.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {{ form.submit }}
+            </form>
+
+	<!-- 		OLD Registration Form
+        <form method="post" action="/register">
+            First Name: <input type = "text" name = "first_name" />
             <br>
+			Last Name: <input type = "text" name = "last_name" />
+			<br>
             Email: <input type = "text" name = "user_email" />
             <br>
             Password: <input type = "password" name = "user_password" />
@@ -52,6 +113,7 @@
 				{% endif %}
 
         </form>
+	-->
 	</main>
 
 	<footer>

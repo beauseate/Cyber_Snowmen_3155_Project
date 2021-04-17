@@ -16,24 +16,29 @@
 
 <body>
 	<div class="wrapper">
-	<header>
-		<!-- Header contents -->
-		<div class="topnav">
-			<a href="#" class="page-title">Homepage</a>
-			<!-- Header navigation -->
-			<nav class="nav-ul">
-				<ul class="nav-ul-center">
-					<li><a href="/index">Home</a></li>
-					<li><a href="#">My Events</a></li>
-					<li><a href="#">Favorites</a></li>
-					<li><a href="/events/create" >Create Event</a></li>
-                    <li><a href="/register" >Register</a></li>
-					<li><a href="#" >User Login</a></li>
-
-				</ul>			
-			</nav>
-		</div>
-	</header>
+		<header><!-- Header contents -->
+			<div class="topnav">
+				<a href="#" class="page-title">Homepage</a>
+				<!-- Header navigation -->
+				<nav class="nav-ul">
+					<ul class="nav-ul-center">
+						<li><a href="/index">Home</a></li>
+						<li><a href="/events/my_events">My Events</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="/events/create" >Create Event</a></li>
+						{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "{{url_for('login') }}">Sign in</a></li>
+							<li><a href = "/register">Register</a></li>
+						{% endif%}
+	
+					</ul>			
+				</nav>
+			</div>
+		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
 		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>

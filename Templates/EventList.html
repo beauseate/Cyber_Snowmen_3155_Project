@@ -42,29 +42,30 @@
 	
 
 	<main>
-		<h1>{{event.name}} Details</h1>
+		<h1>Event List</h1>
+	
+
+		{% for event in events %}
         <table>
             <tr>
-                <th>Description</th>
+				<th><a href="{{ url_for('get_event', e_id=event.event_id )}}">Event:</a></th>
                 <th>Date</th>
-                <th>Created by</th>
+                <th>Created by:</th>
                 <th>Rating</th>
 				<th>Likes</th>
             </tr>
             <tr>
-                <td>{{ event.desc }}</td>
+                <td>{{ event.name }}</td>
                 <td>{{ event.date }}</td>
                 <td>{{ event.user}}</td>
                 <td>{{ event.rating}}</td>
 				<td>{{ event.likes}}</td>
             </tr>
         </table>
-		<br>
-        <form action="" method="post">
-            <input type="submit" name="upvote" value="Upvote" />
-        </form>
-	</main>
+		{% endfor %}
 
+	</main>
+				
 	<footer>
 		<!-- Footer contents -->
 		<div class="botnav">

@@ -23,7 +23,7 @@
 				<nav class="nav-ul">
 					<ul class="nav-ul-center">
 						<li><a href="/index">Home</a></li>
-						<li><a href="/events/my_events">My Events</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="#">My Events</a></li><!--will need a link to the my_events page once made -->
 						<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
 						<li><a href="/events/create" >Create Event</a></li>
 						{% if user%}
@@ -42,27 +42,31 @@
 	
 
 	<main>
-		<h1>{{event.name}} Details</h1>
-        <table>
-            <tr>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Created by</th>
-                <th>Rating</th>
-				<th>Likes</th>
-            </tr>
-            <tr>
-                <td>{{ event.desc }}</td>
-                <td>{{ event.date }}</td>
-                <td>{{ event.user}}</td>
-                <td>{{ event.rating}}</td>
-				<td>{{ event.likes}}</td>
-            </tr>
-        </table>
-		<br>
-        <form action="" method="post">
-            <input type="submit" name="upvote" value="Upvote" />
-        </form>
+		<h1>My Events</h1>
+        <br>
+        {% for event in events %}
+            <h2>{{event.name}} Details</h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Created by</th>
+                    <th>Rating</th>
+                    <th>Likes</th>
+                </tr>
+                <tr>
+                    <td>{{ event.desc }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.rating }}</td>
+                    <td>{{ event.likes }}</td>
+                </tr>
+            </table>
+            <br>
+            <form action="" method="post">
+                <input type="submit" name="upvote" value="Upvote" />
+            </form>
+        {% endfor %}
 	</main>
 
 	<footer>

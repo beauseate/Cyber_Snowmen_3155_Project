@@ -15,45 +15,64 @@
 
 <body>
 	<div class="wrapper">
-	<header>
-		<!-- Header contents -->
-		<div class="topnav">
-			<a href="#" class="page-title">New Event</a>
-			<!-- Header navigation -->
-			<nav class="nav-ul">
-				<ul class="nav-ul-center">
-					<li><a href="/index">Home</a></li>
-					<li><a href="#">My Events</a></li>
-					<li><a href="#">Favorites</a></li>
-					<li><a href="/events/create" >Create Event</a></li>
-                    <li><a href="/register" >Register</a></li>
-					<li><a href="#" >User Login</a></li>
-				</ul>			
-			</nav>
-		</div>
-	</header>
+		<header><!-- Header contents -->
+			<div class="topnav">
+				<a href="#" class="page-title">Homepage</a>
+				<!-- Header navigation -->
+				<nav class="nav-ul">
+					<ul class="nav-ul-center">
+						<li><a href="/index">Home</a></li>
+						<li><a href="/events/my_events">My Events</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="/events/create" >Create Event</a></li>
+						{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "#">Sign in</a></li>
+							<li><a href = "/register">Register</a></li>
+						{% endif%}
+	
+					</ul>			
+				</nav>
+			</div>
+		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
-		<form method = "post">
-            Event Name: <input type = "text" name = "name" />
-           	<br>
-			Day: <input type = "text" name = "day" />
-			<br>
-			Month: <input type = "text" name = "month" />
-			<br>
-			Year: <input type = "text" name = "year" />
-			<br>
-			Enter a description for your event: <input type = "text" name = "description" />
-			<input type="submit" value="Create"/>
-			{% if error %}
-			{% if error.HasError %}
-                    <h3> {{ error.Message }}  </h3>
-			{% endif %}
-			{% endif %}
-
-
-        </form>
-
+	<div class="formwrapper">
+            <h2 class="title">Create Event</h2>
+            <form method="POST">
+                <div class="form-field">{{ form.name.label }} {{ form.name }}
+                    {% if form.name.errors %}
+                    <ul class="errors">
+                        {% for error in form.name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.desc.label }} {{ form.desc }}
+                    {% if form.desc.errors %}
+                    <ul class="errors">
+                        {% for error in form.desc.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">{{ form.date.label }} {{ form.date }}
+                    {% if form.date.errors %}
+                    <ul class="errors">
+                        {% for error in form.date.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {{ form.submit }}
+            </form>
+	</div>
         
 	</main>
 
