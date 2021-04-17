@@ -19,9 +19,13 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# @app.route is a decorator. It gives the function "index" special powers.
-# In this case it makes it so anyone going to "your-url/" makes this function
-# get called. What it returns is what is shown as the web page
+'''
+
+TAB: HOME
+
+DESC: The initial page of an existing and new user.
+
+'''
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -41,6 +45,11 @@ def index():
         listEvents = db.session.query(Event).all()
         return render_template('Home.html', events=listEvents)
 
+'''
+
+DESC: The route to each individual event filtered by it's event ID.
+
+'''
 @app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
@@ -63,9 +72,12 @@ def listEvents():
     # Run a query for all events in the Event table
     events = db.session.query(Event).all()
     return render_template('EventList.html',  events=events)
+
 '''
 
-VIEW YOUR OWN EVENTS
+TAB: MY EVENTS
+
+DESC: View events that you have created.
 
 '''
 @app.route('/events/my_events', methods=['GET', 'POST'])
@@ -76,8 +88,13 @@ def my_events():
     else:
         return redirect(url_for('login'))
 
+'''
 
+TAB: CREATE EVENT
 
+DESC: Create new events tied to a user account.
+
+'''
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
     if session.get('user'):
@@ -100,6 +117,13 @@ def new_event():
         # Have the user login before creating an event
         return redirect(url_for('login'))
 
+'''
+
+TAB: REGISTER
+
+DESC: Only active when a user logged out. Register a new user to the database.
+
+'''
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
@@ -126,13 +150,26 @@ def register():
     # something went wrong - display register view
     return render_template('Registration.html', form=form)
 
+'''
+
+TAB: LOGOUT
+
+DESC: Only active when a user is logged in. The place where the user wishes to log out.
+
+'''
 @app.route('/logout')
 def logout():
     if session.get('user'):
         session.clear()
     return redirect(url_for('index'))
 
-##login goes here
+'''
+
+TAB: SIGN IN
+
+DESC: Only active when a user is logged out. The place where the user enters existing account information to login.
+
+'''
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     login_form = LoginForm()
@@ -156,6 +193,11 @@ def login():
         # form did not validate or GET request
         return render_template("login.html", form=login_form)
 
+'''
+
+DESC: Function to randomly generate user IDs.
+
+'''
 def generate_userID():
     #Generate 4 digit number for userID and ensure that all users have unique IDs
     id = randint(1000, 9999)
@@ -165,6 +207,11 @@ def generate_userID():
         idTaken = User.query.filter_by(user_id=id).first()
     return id
 
+'''
+
+DESC: Function to randomly gernerate event IDs.
+
+'''
 def generate_eventID():
     #Generate 6 digit number for eventID and ensure that all events have unique IDs
     id = randint(100000, 999999)
