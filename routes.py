@@ -56,6 +56,20 @@ def listEvents():
     # Run a query for all events in the Event table
     events = db.session.query(Event).all()
     return render_template('EventList.html',  events=events)
+'''
+
+VIEW YOUR OWN EVENTS
+
+'''
+@app.route('/events/my_events', methods=['GET', 'POST'])
+def my_events():
+    if session.get('user'):
+        my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
+        return render_template('my_events.html', events=my_events, user =session['user'])
+    else:
+        return redirect(url_for('login'))
+
+
 
 @app.route('/events/create', methods=['GET', 'POST'])
 def new_event():
@@ -66,7 +80,8 @@ def new_event():
             date = request.form['date']
             desc = request.form['desc']
             user = session['user']
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0)
+            user_id = session['user_id']
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id)
             db.session.add(newEvent)
             db.session.commit()
             # Redirect the user to the newly created event's page
