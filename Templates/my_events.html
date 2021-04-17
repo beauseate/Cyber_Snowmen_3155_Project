@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<title>Cyber Snowmen Header & Footer Template</title>
+	<!-- Meta tag for description -->
+	<meta name="description" content="header and footer">
+	<!-- Meta tag for author -->
+	<meta name="author" content="Cyber Snowmen">
+	<!-- Meta tag for character encoding -->
+	<meta charset="utf-8">
+	<!-- External Stylesheet -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
+</head>
+
+<body>
+	<div class="wrapper">
+		<header><!-- Header contents -->
+			<div class="topnav">
+				<a href="#" class="page-title">Homepage</a>
+				<!-- Header navigation -->
+				<nav class="nav-ul">
+					<ul class="nav-ul-center">
+						<li><a href="/index">Home</a></li>
+						<li><a href="#">My Events</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
+						<li><a href="/events/create" >Create Event</a></li>
+						{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "#">Sign in</a></li>
+							<li><a href = "/register">Register</a></li>
+						{% endif%}
+	
+					</ul>			
+				</nav>
+			</div>
+		</header>		<!-- END HEADER - COPY FRIENDLY!-->
+	
+
+	<main>
+		<h1>My Events</h1>
+        <br>
+        {% for event in events %}
+            <h2>{{event.name}} Details</h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Created by</th>
+                    <th>Rating</th>
+                    <th>Likes</th>
+                </tr>
+                <tr>
+                    <td>{{ event.desc }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.rating }}</td>
+                    <td>{{ event.likes }}</td>
+                </tr>
+            </table>
+            <br>
+            <form action="" method="post">
+                <input type="submit" name="upvote" value="Upvote" />
+            </form>
+        {% endfor %}
+	</main>
+
+	<footer>
+		<!-- Footer contents -->
+		<div class="botnav">
+			<!-- Footer navigation -->
+			<nav class="nav-ul">
+				<ul>
+					<li><a href="/index">Home</a></li>
+					<li><a href="#">My Events</a></li>
+					<li><a href="#">Favorites</a></li>
+					<li><a href="/events/create" >Create Event</a></li>
+                    <li><a href="/register" >Register</a></li>
+					<li><a href="#" >User Login</a></li>
+				</ul>
+			</nav>
+			<!-- Copyright -->
+			<p id="copyright">&copy; Snowmen Gang 2021</p>
+		</div>
+	</footer>
+	</div>
+</body>
+</html>
