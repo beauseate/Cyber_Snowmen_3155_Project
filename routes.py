@@ -5,7 +5,6 @@ from flask import Flask  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
-import re
 from database import db
 from models import User as User
 from models import Event as Event
@@ -28,7 +27,7 @@ with app.app_context():
 def index():
     if request.method == 'POST':
         searchEvent = request.form['event']
-        # Filters the Event table by Name attribute that is LIKE whatever the user searches, i.e.
+        # Filters the Event table by Name attribute that is LIKE whatever the user searches
         events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
         if session.get('user'):
             return render_template('Home.html', events=events, user=session['user'])
@@ -46,11 +45,16 @@ def index():
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
+        # Increase the likes of an event if the upvote button is clicked
         if request.method == 'POST' and request.form['upvote']:
             eventExists.likes += 1
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
+    # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
+    # Redirect them to the list of all events instead
+    elif session.get('user') and (not eventExists):
+        return redirect(url_for('listEvents'))
     else:
         return redirect(url_for('login'))
 
