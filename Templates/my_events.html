@@ -45,7 +45,7 @@
 		<h1>My Events</h1>
         <br>
         {% for event in events %}
-            <h2>{{event.name}} Details</h2>
+            <h2><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}} Details</a></h2>
             <table>
                 <tr>
                     <th>Description</th>
