@@ -12,7 +12,6 @@ from models import Event as Event
 from random import randint
 from flask import session
 from forms import RegisterForm, LoginForm, NewEventForm
-
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -34,10 +33,38 @@ def index():
     #     if eventExists:
     #         eventID = eventExists.event_id
     #         return redirect(url_for('get_event', e_id=eventID))
+
+    #Search Logic (Sort of scuffed but works how I would imagine it would - Kevin)
+    if request.method == 'POST':
+        searchEvent = request.form['event']
+        #Setup 3 arrays for later
+        eventExists = []
+        eventExistsID = []
+        allEvents = Event.query.all()
+        #Setup a regex string to match whole words that are searched
+        regex = r"\b" + re.escape(searchEvent) + r"\b"
+        #For loop that goes through all events
+        for event in allEvents:
+            #Utilizes regex string to check if the string is contained in the event name (Could not get this to function as I would have liked using sqlalchemy, resorted to doing all the string
+            # searching and whatnot in python then going back to sqlalchemy)
+            if re.search(regex, event.name, re.IGNORECASE):
+                #Appends the Event ID for each matching event to an array
+                eventExistsID.append(event.event_id)
+        if eventExistsID:
+            #Appends each event to a seperate array to be passed to the home page.
+            for i in range(0,len(eventExistsID)):
+                eventExists.append(Event.query.filter(Event.event_id == eventExistsID[i]).one())
+            if session.get('user'):
+                return render_template('Home.html', events=eventExists, user=session['user'])
+            else:
+                return render_template('Home.html', events=eventExists)
+    # Now sends list of all events to homepage
     if session.get('user'):
-        return render_template('Home.html', user=session['user'])
+        listEvents = db.session.query(Event).all()
+        return render_template('Home.html', events=listEvents, user=session['user'])
     else:
-        return render_template('Home.html')
+        listEvents = db.session.query(Event).all()
+        return render_template('Home.html', events=listEvents)
 
 @app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):

@@ -50,6 +50,28 @@
                 <input type = "submit" value = "Search" />
             </form>
         </h1>
+		<!-- Event listing, implementation currently same as flask activity-->
+		<h1>
+			List of Events
+		</h1>
+		<table>
+			<tr>
+				<th>Event Name</th>
+				<th>Event Date</th>
+				<th>Event Description</th>
+				<th>Created By</th>
+				<th>Event Rating</th>
+			</tr>
+			{% for event in events %}
+			<tr>
+				<td>{{event.name}}</td>
+				<td>{{event.date}}</td>
+				<td>{{event.desc}}</td>
+				<td>{{event.user}}</td>
+				<td>{{event.rating}}</td>
+			</tr>
+			{% endfor %}
+		</table>
 	</main>
 
 	<footer>
