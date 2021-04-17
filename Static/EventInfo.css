@@ -4,3 +4,9 @@ table, th, td {
 input[type=submit]{
   border-style: double;
 }
+table {
+  width: 50%;
+}
+th, td {
+  height: 30px;
+}
