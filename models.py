@@ -7,6 +7,7 @@ class User(db.Model):
     first_name = db.Column("first_name", db.String(75))
     last_name = db.Column("Last_Name", db.String(75))
     password = db.Column("Password", db.String(255))
+    events_liked = db.relationship("Likes", backref="user", cascade="all, delete-orphan", lazy=True)
     events_attending = db.relationship("RSVP", backref="user", lazy=True)
 
     def __init__(self, id, email, first_name, last_name, password):
@@ -51,3 +52,15 @@ class RSVP(db.Model):
         self.RSVP_id = id
         self.event_id = event_id
         self.user_id = user_id
+
+
+class Likes(db.Model):
+    likes_id = db.Column("Likes_ID", db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
+
+    def __init__(self, id, event_id, user_id):
+        self.likes_id = id
+        self.event_id = event_id
+        self.user_id = user_id
+

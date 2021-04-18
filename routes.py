@@ -6,7 +6,7 @@ from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from database import db
-from models import User as User
+from models import User as User, Likes
 from models import Event as Event
 from random import randint
 from flask import session
@@ -63,10 +63,24 @@ DESC: The route to each individual event filtered by it's event ID.
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
+        # Check to see if the user has already liked this event
+        hasLiked = db.session.query(Likes).filter_by(event_id=eventExists.event_id).first()
         # Increase the likes of an event if the upvote button is clicked
-        if request.method == 'POST' and request.form['upvote']:
+        if request.method == 'POST' and ('upvote' in request.form):
+            if hasLiked:
+                return render_template('EventInfo.html', user=session['user'], event=eventExists, hasLiked=hasLiked)
             eventExists.likes += 1
+            eventLiked = Likes(generate_likeID(), eventExists.event_id, session['user_id'])
+            db.session.add(eventLiked)
             db.session.commit()
+            return redirect(url_for('get_event', e_id=eventExists.event_id))
+        # Decrease the likes if the upvote button is clicked
+        if request.method == 'POST' and ('downvote' in request.form):
+            eventExists.likes -= 1
+            # Check if the user has already liked this event and if so, delete it from events they like
+            if hasLiked:
+                db.session.delete(hasLiked)
+                db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
@@ -253,7 +267,7 @@ def generate_userID():
 
 '''
 
-DESC: Function to randomly gernerate event IDs.
+DESC: Function to randomly generate event IDs.
 
 '''
 def generate_eventID():
@@ -263,6 +277,20 @@ def generate_eventID():
     while idTaken:
         id = randint(100000, 999999)
         idTaken = Event.query.filter_by(event_id=id).first()
+    return id
+'''
+
+DESC: Function to randomly generate Like IDs.
+
+'''
+def generate_likeID():
+    # Arbitrary because the Likes table needs a primary key
+    # Generate 5 digit number for likeID and ensure that all Likes have unique IDs
+    id = randint(100, 999)
+    idTaken = Likes.query.filter_by(likes_id=id).first()
+    while idTaken:
+        id = randint(100, 999)
+        idTaken = Likes.query.filter_by(likes_id=id).first()
     return id
 
 
