@@ -11,10 +11,16 @@ from models import Event as Event
 from random import randint
 from flask import session
 from forms import RegisterForm, LoginForm, NewEventForm
+from os.path import join, dirname, realpath
+from werkzeug.utils import secure_filename
+Images = join(dirname(realpath(__file__)),'Images')
+ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'SE3155'
+
+app.config['UPLOAD_FOLDER'] = Images
 db.init_app(app)
 with app.app_context():
     db.create_all()
@@ -26,6 +32,9 @@ TAB: HOME
 DESC: The initial page of an existing and new user.
 
 '''
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -105,7 +114,20 @@ def new_event():
             desc = request.form['desc']
             user = session['user']
             user_id = session['user_id']
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id)
+            
+            if 'file' not in request.files:
+                return redirect(request.url)
+            file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+            if file.filename == '':
+                    
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename =file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id,filename)
             db.session.add(newEvent)
             db.session.commit()
             # Redirect the user to the newly created event's page
