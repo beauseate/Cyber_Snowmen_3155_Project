@@ -25,11 +25,12 @@ class Event(db.Model):
     reports = db.Column("Reports", db.Integer)
     desc = db.Column("Description", db.String(500))
     likes = db.Column("Likes", db.Integer)
+    filename= db.Column("filename", db.String(150))
 
     user_id = db.Column(db.Integer(), db.ForeignKey("user.User_ID"), nullable=False)
     events_attending = db.relationship("RSVP", backref="event",cascade="all, delete-orphan", lazy=True)
 
-    def __init__(self, event_id, date, name, rating, user, reports, desc, likes, user_id):
+    def __init__(self, event_id, date, name, rating, user, reports, desc, likes, user_id,filename):
         self.event_id = event_id
         self.date = date
         self.name = name
@@ -39,6 +40,7 @@ class Event(db.Model):
         self.desc = desc
         self.likes = likes
         self.user_id = user_id
+        self.filename= filename
 
 class RSVP(db.Model):
     RSVP_id = db.Column("RSVP_ID", db.Integer, primary_key=True)

@@ -42,7 +42,7 @@
 	<main>
 	<div class="formwrapper">
             <h2 class="title">Create Event</h2>
-            <form method="POST">
+            <form method="POST" enctype=multipart/form-data>
                 <div class="form-field">{{ form.name.label }} {{ form.name }}
                     {% if form.name.errors %}
                     <ul class="errors">
@@ -70,6 +70,10 @@
                     </ul>
                     {% endif %}
                 </div>
+				
+					<input type=file name=file>
+
+				
                 {{ form.submit }}
             </form>
 	</div>
