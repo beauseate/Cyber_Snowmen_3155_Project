@@ -175,10 +175,9 @@ def delete_event(event_id):
         return redirect(url_for('login'))
 @app.route ('/events/edit/<event_id>', methods = ['POST', 'GET'])
 def edit_event(event_id):
-    event = db.session.query(Event).filter_by(event_id=event_id).first()
-    if session.get('user') and request.method == 'POST':
+    if session.get('user'):
         editForm = NewEventForm()
-        if request.method == 'POST' and editForm.validate_on_submit():
+        if editForm.validate_on_submit():
             new_name = request.form['name']
             new_date = request.form['date']
             new_desc = request.form['desc']
@@ -194,6 +193,8 @@ def edit_event(event_id):
             if file and allowed_file(file.filename):
                 filename = file.filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+            event = db.session.query(Event).filter_by(event_id=event_id).first()
             event.name = new_name
             event.date = new_date
             event.desc = new_desc
