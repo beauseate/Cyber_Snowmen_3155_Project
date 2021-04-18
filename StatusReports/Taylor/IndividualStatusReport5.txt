@@ -1,0 +1,11 @@
+Goals from last week:
+•	Work on the final Flask practice
+•	See which functions still need to be implemented in website
+•	Possibly work with others to create unit tests for different routes
+Progress for this week:
+•	Finished Flask practice activities
+•	Helped finish up the MVP for our app
+Goals for next week:
+•	Squash any bugs found in the website
+•	Help implement any remaining bonus features
+•	Implement more CSS to style views
