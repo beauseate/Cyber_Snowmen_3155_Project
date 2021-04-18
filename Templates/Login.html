@@ -1,43 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Sign in</title>
-        <!-- Meta tag for description -->
-        <meta name="description" content="header and footer">
-        <!-- Meta tag for author -->
-        <meta name="author" content="Cyber Snowmen">
-        <!-- Meta tag for character encoding -->
-        <meta charset="utf-8">
-        <!-- External Stylesheet -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+<head>
+    <title>Sign in</title>
+    <!-- Meta tag for description -->
+    <meta name="description" content="header and footer">
+    <!-- Meta tag for author -->
+    <meta name="author" content="Cyber Snowmen">
+    <!-- Meta tag for character encoding -->
+    <meta charset="utf-8">
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
     
-    </head>
+</head>
 
-    <body>
-        <div class="wrapper">
-            <header><!-- Header contents -->
-                <div class="topnav">
-                    <a href="#" class="page-title">Homepage</a>
-                    <!-- Header navigation -->
-                    <nav class="nav-ul">
-                        <ul class="nav-ul-center">
-                            <li><a href="/index">Home</a></li>
-                            <li><a href="#">My Events</a></li><!--will need a link to the my_events page once made -->
-                            <li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
-                            <li><a href="/events/create" >Create Event</a></li>
-                            {% if user%}
-                            <li>
-                                <a href = "{{url_for('logout') }}">Logout</a>
-                            </li>
-                            {%else%}
-                            <li><a href = "#">Sign in</a></li>
-                                <li><a href = "/register">Register</a></li>
-                            {% endif%}
-        
-                        </ul>			
-                    </nav>
-                </div>
-            </header>		<!-- END HEADER - COPY FRIENDLY!-->
+<body>
+    <div class="wrapper">
+        <header><!-- Header contents -->
+            <div class="topnav">
+                <a href="#" class="page-title">Homepage</a>
+                <!-- Header navigation -->
+                <nav class="nav-ul">
+                    <ul class="nav-ul-center">
+                        <li><a href="/index">Home</a></li>
+                        <li><a href="#">My Events</a></li><!--will need a link to the my_events page once made -->
+                        <li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
+                        <li><a href="/events/create" >Create Event</a></li>
+                        {% if user%}
+                        <li>
+                            <a href = "{{url_for('logout') }}">Logout</a>
+                        </li>
+                        {%else%}
+                        <li><a href = "#">Sign in</a></li>
+                        <li><a href = "/register">Register</a></li>
+                        {% endif%}
+                        
+                    </ul>			
+                </nav>
+            </div>
+        </header>		<!-- END HEADER - COPY FRIENDLY!-->
+        <main>
             <div class="formwrapper">
                 <h2 class="title">Login</h2>
                 <form method="POST" action="/login">
@@ -61,8 +62,29 @@
                     </div>
                     {{ form.submit }}
                 </form>
+            </div>
+        </main>
+        <footer>
+            <!-- Footer contents -->
+            <div class="botnav">
+                <!-- Footer navigation -->
+                <nav class="nav-ul">
+                    <ul>
+                        <li><a href="/index">Home</a></li>
+                        <li><a href="/events/my_events">My Events</a></li>
+                        <li><a href="#">Favorites</a></li>
+                        <li><a href="/events/create" >Create Event</a></li>
+                        <li><a href="/register" >Register</a></li>
+                        <li><a href="{{url_for('login') }}" >User Login</a></li>
+                    </ul>
+                </nav>
+                <!-- Copyright -->
+                <p id="copyright">&copy; Snowmen Gang 2021</p>
+            </div>
+        </footer>
 
     </body>
 
 
-</html>
+
+    </html>
