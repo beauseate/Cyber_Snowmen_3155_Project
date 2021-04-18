@@ -173,6 +173,37 @@ def delete_event(event_id):
     else:
         #user is not in session redirect to login
         return redirect(url_for('login'))
+@app.route ('/events/edit/<event_id>', methods = ['POST', 'GET'])
+def edit_event(event_id):
+    event = db.session.query(Event).filter_by(event_id=event_id).first()
+    if session.get('user'):
+        editForm = NewEventForm()
+        if request.method == 'POST' and editForm.validate_on_submit():
+            name = request.form['name']
+            date = request.form['date']
+            desc = request.form['desc']
+            user = session['user']
+            user_id = session['user_id']
+
+            if 'file' not in request.files:
+                return redirect(request.url)
+            file = request.files['file']
+
+            if file.filename == '':
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            event.name = name
+            event.date = date
+            event.desc = desc
+            event.filename = filename
+            db.session.commit()
+            return redirect(url_for('get_event', e_id=event.event_id))
+        else:
+            return render_template('new_event.html', form=editForm)
+    else:
+        return redirect(url_for('login'))
 
 
 '''
