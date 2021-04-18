@@ -11,8 +11,8 @@ Progress this week:
 * Implement product features
 
 Goals this next week:
-* Creating Backlog items
-* Create more html and CSS designs
+* Implement more HTML and CSS designs
+* Implement product features
 * Test different Events
 * Start looking into how to present product
 
