@@ -12,7 +12,8 @@
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}">
+	<!-- <link rel="stylesheet" href="/static/common.css"> -->
 
 </head>
 
@@ -87,7 +88,7 @@
 					<li><a href="#">Favorites</a></li>
 					<li><a href="/events/create" >Create Event</a></li>
 					<li><a href="/register" >Register</a></li>
-					<li><a href="#" >User Login</a></li>
+					<li><a href="{{url_for('login') }}" >User Login</a></li>
 				</ul>
 			</nav>
 			<!-- Copyright -->
