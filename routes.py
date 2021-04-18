@@ -141,6 +141,28 @@ def new_event():
 
 '''
 
+TAB: DELETE
+
+DESC: Deletes the event in question. Currently redirects to home page.
+'''
+@app.route ('/events/delete/<event_id>', methods = ['POST'])
+def delete_event(event_id):
+    #check if a user is saved in session
+    if session.get('user'):
+
+        #retrieve event from database
+        my_event = db.session.query(Event).filter_by(event_id=event_id).one()
+        db.session.delete(my_event)
+        db.session.commit()
+
+        return redirect (url_for('my_events'))
+    else:
+        #user is not in session redirect to login
+        return redirect(url_for('login'))
+
+
+'''
+
 TAB: REGISTER
 
 DESC: Only active when a user logged out. Register a new user to the database.
