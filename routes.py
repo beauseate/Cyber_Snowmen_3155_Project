@@ -107,7 +107,29 @@ DESC: View events that you have created.
 def my_events():
     if session.get('user'):
         my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
-        return render_template('my_events.html', events=my_events, user =session['user'])
+        return render_template('my_events.html', events=my_events, user=session['user'])
+    else:
+        return redirect(url_for('login'))
+'''
+
+TAB: MY EVENTS
+
+DESC: View events that you have created.
+
+'''
+@app.route('/events/favorites')
+def favorite_events():
+    if session.get('user'):
+        id = session.get('user_id')
+        # Run a query to get all events that a user likes
+        fav_events = db.session.query(Likes).filter_by(user_id=id).all()
+        events = []
+        # Iterate over all events that the user likes and add to a list
+        for i in fav_events:
+            events.append(db.session.query(Event).filter_by(event_id=i.event_id).one())
+        # Only need to return the template for my_events since this will filter by liked/favorited events instead
+        # of all events created by the user
+        return render_template('favorite_events.html', events=events, user=session['user'])
     else:
         return redirect(url_for('login'))
 
@@ -148,7 +170,7 @@ def new_event():
             return redirect(url_for('get_event', e_id=newEvent.event_id))
         else:
             # Display new_event view if something goes wrong
-            return render_template('new_event.html', form=eventForm)
+            return render_template('new_event.html', form=eventForm, user=session['user'])
     else:
         # Have the user login before creating an event
         return redirect(url_for('login'))
@@ -202,7 +224,7 @@ def edit_event(event_id):
             db.session.commit()
             return redirect(url_for('get_event', e_id=event.event_id))
         else:
-            return render_template('edit_event.html', form=editForm)
+            return render_template('edit_event.html', form=editForm, user=session['user'])
     else:
         return redirect(url_for('login'))
 

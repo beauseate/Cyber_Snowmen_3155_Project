@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-	<title>Create Event</title>
+	<title>Cyber Snowmen Header & Footer Template</title>
 	<!-- Meta tag for description -->
 	<meta name="description" content="header and footer">
 	<!-- Meta tag for author -->
@@ -11,6 +11,7 @@
 	<meta charset="utf-8">
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
 </head>
 
 <body>
@@ -33,51 +34,38 @@
 						<li><a href = "{{url_for('login') }}">Sign in</a></li>
 						<li><a href = "{{url_for('register') }}">Register</a></li>
 						{% endif%}
-	
-					</ul>			
+
+					</ul>
 				</nav>
 			</div>
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
-	<main>
-	<div class="formwrapper">
-            <h2 class="title">Create Event</h2>
-            <form method="POST" enctype=multipart/form-data>
-                <div class="form-field">{{ form.name.label }} {{ form.name }}
-                    {% if form.name.errors %}
-                    <ul class="errors">
-                        {% for error in form.name.errors %}
-                        <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-                <div class="form-field">{{ form.desc.label }} {{ form.desc }}
-                    {% if form.desc.errors %}
-                    <ul class="errors">
-                        {% for error in form.desc.errors %}
-                        <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-                <div class="form-field">{{ form.date.label }} {{ form.date }}
-                    {% if form.date.errors %}
-                    <ul class="errors">
-                        {% for error in form.date.errors %}
-                        <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-				
-					<input type=file name=file>
 
-				
-                {{ form.submit }}
-            </form>
-	</div>
-        
+	<main>
+		<h1>My Favorites</h1>
+        <br>
+        {% for event in events %}
+            <h2><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}} Details</a></h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Created by</th>
+                    <th>Rating</th>
+                    <th>Likes</th>
+                </tr>
+                <tr>
+                    <td>{{ event.desc }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.rating }}</td>
+                    <td>{{ event.likes }}</td>
+					<td>
+					</td>
+                </tr>
+            </table>
+            <br>
+        {% endfor %}
 	</main>
 
 	<footer>
