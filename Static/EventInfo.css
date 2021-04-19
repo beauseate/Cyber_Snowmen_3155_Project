@@ -1,0 +1,15 @@
+table, th, td {
+  border: 1px solid black;
+  height: 30px;
+}
+input[type=submit]{
+  border-style: double;
+}
+table {
+  width: 50%;
+}
+
+.event_image {
+    width: 200px; /* you can use % */
+    height: auto;
+}

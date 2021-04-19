@@ -1,0 +1,18 @@
+From last week:
+* Designing/start doing backlog items
+* Established what backlog items I should do
+* Implemented header and footer to templates
+* Design/start doing other pages
+* Get group input on page designs
+
+Progress this week:
+* Fixed some CSS and HTML
+* Implement product backlogs
+* Implement product features
+
+Goals this next week:
+* Implement more HTML and CSS designs
+* Implement product features
+* Test different Events
+* Start looking into how to present product
+

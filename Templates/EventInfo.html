@@ -1,33 +1,102 @@
 <!DOCTYPE html>
+
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="Event Details" content="Null">
-        <title>View an Event</title>
-        <!-- styles -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    </head>
-    <body>
-	<h1>Hello {{user}}!, you are viewing {{event.name}}</h1>
-	<nav>
-		<a href="/index"> Home </a> |
-		<a href="/register"> Register</a>
-	</nav>
-        <h1>{{event.name}} Details</h1>
+<head>
+	<title>Cyber Snowmen Header & Footer Template</title>
+	<!-- Meta tag for description -->
+	<meta name="description" content="header and footer">
+	<!-- Meta tag for author -->
+	<meta name="author" content="Cyber Snowmen">
+	<!-- Meta tag for character encoding -->
+	<meta charset="utf-8">
+	<!-- External Stylesheet -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
+</head>
+
+<body>
+	<div class="wrapper">
+		<header><!-- Header contents -->
+			<div class="topnav">
+				<a href="#" class="page-title">Homepage</a>
+				<!-- Header navigation -->
+				<nav class="nav-ul">
+					<ul class="nav-ul-center">
+						<li><a href="{{url_for('index') }}">Home</a></li>
+						<li><a href="{{url_for('my_events') }}">My Events</a></li>
+						<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
+						<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
+						{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "{{url_for('login') }}">Sign in</a></li>
+						<li><a href = "{{url_for('register') }}">Register</a></li>
+						{% endif%}
+	
+					</ul>			
+				</nav>
+			</div>
+		</header>		<!-- END HEADER - COPY FRIENDLY!-->
+	
+
+	<main>
+		<h1>{{event.name}} Details</h1>
         <table>
             <tr>
                 <th>Description</th>
                 <th>Date</th>
-                <th>Host</th>
+                <th>Created by</th>
                 <th>Rating</th>
+				<th>Likes</th>
             </tr>
             <tr>
                 <td>{{ event.desc }}</td>
                 <td>{{ event.date }}</td>
                 <td>{{ event.user}}</td>
                 <td>{{ event.rating}}</td>
+				<td>{{ event.likes}}</td>
             </tr>
         </table>
-    </body>
+		<br>
+		{% if hasLiked %}
+			<dialog open id="error">
+         		Cannot like an event more than once!
+   				<button onclick="window.error.close();">Close</button>
+  			 </dialog>
+		{% endif %}
+
+      <form method = "post">
+          <input type="submit" name="upvote" value="Upvote" /> ||
+  		 <input type="submit" name="downvote" value="Downvote" />
+      </form>
+	</main>
+
+	<footer>
+		<!-- Footer contents -->
+		<div class="botnav">
+			<!-- Footer navigation -->
+			<nav class="nav-ul">
+				<ul>
+					<li><a href="{{url_for('index') }}">Home</a></li>
+					<li><a href="{{url_for('my_events') }}">My Events</a></li>
+					<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
+					<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
+					{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "{{url_for('login') }}">Sign in</a></li>
+						<li><a href = "{{url_for('register') }}">Register</a></li>
+						{% endif%}
+				</ul>
+			</nav>
+			<!-- Copyright -->
+			<p id="copyright">&copy; Snowmen Gang 2021</p>
+		</div>
+	</footer>
+	</div>
+</body>
 </html>

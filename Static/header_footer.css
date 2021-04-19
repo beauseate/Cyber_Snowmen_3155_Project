@@ -44,19 +44,22 @@ header, footer {
 }
 
 header .nav-ul ul {
-  position: sticky;
   text-align: center;
   margin-left: 500px;
+}
+
+header .nav-ul ul li{
+  list-style: none;
+  display: inline-block;
 }
 
 header .nav-ul li a {
   color: black;
   background-color: white;
+  font-weight: bold;
+  margin-right: 5px;
   text-decoration: none;
   padding: 10px 12px;
-  margin-right: 5px;
-  font-weight: bold;
-  
 }
 
 /*CSS selectors for header navbar*/
@@ -91,7 +94,6 @@ footer .nav-ul li a:hover, footer .nav-ul li a:focus {
   font-size: 12px;
   padding-bottom: 5px;
 }
-
 
 
 

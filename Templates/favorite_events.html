@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-	<title>Homepage</title>
+	<title>Cyber Snowmen Header & Footer Template</title>
 	<!-- Meta tag for description -->
 	<meta name="description" content="header and footer">
 	<!-- Meta tag for author -->
@@ -12,8 +12,6 @@
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
-	<!-- <link rel="stylesheet" href="/static/common.css"> -->
-
 </head>
 
 <body>
@@ -36,46 +34,38 @@
 						<li><a href = "{{url_for('login') }}">Sign in</a></li>
 						<li><a href = "{{url_for('register') }}">Register</a></li>
 						{% endif%}
-	
-					</ul>			
+
+					</ul>
 				</nav>
 			</div>
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
-	<main>
-		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>
 
-        <h2>Use this site to create and RSVP to nearby events.</h2>
-        <h1>
-            <form method = "post">
-                Search for event: <input type = "text" name = "event" />
-                <input type = "submit" value = "Search" />
-            </form>
-        </h1>
-		<!-- Event listing, implementation currently same as flask activity-->
-		<h1>
-			List of Events
-		</h1>
-		<table>
-			<tr>
-				<th>Event Picture</th>
-				<th>Event Name</th>
-				<th>Event Date</th>
-				<th>Event Description</th>
-				<th>Created By</th>
-				<th>Event Rating</th>
-			</tr>
-			{% for event in events %}
-			<tr>
-				<td><img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}"></td>
-				<td><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a></td>
-				<td>{{event.date}}</td>
-				<td>{{event.desc}}</td>
-				<td>{{event.user}}</td>
-				<td>{{event.rating}}</td>
-			</tr>
-			{% endfor %}
-		</table>
+	<main>
+		<h1>My Favorites</h1>
+        <br>
+        {% for event in events %}
+            <h2><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}} Details</a></h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Created by</th>
+                    <th>Rating</th>
+                    <th>Likes</th>
+                </tr>
+                <tr>
+                    <td>{{ event.desc }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.rating }}</td>
+                    <td>{{ event.likes }}</td>
+					<td>
+					</td>
+                </tr>
+            </table>
+            <br>
+        {% endfor %}
 	</main>
 
 	<footer>
