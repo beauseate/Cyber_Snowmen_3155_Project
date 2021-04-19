@@ -58,6 +58,7 @@
 		</h1>
 		<table>
 			<tr>
+				<th>Event Picture</th>
 				<th>Event Name</th>
 				<th>Event Date</th>
 				<th>Event Description</th>
@@ -66,6 +67,7 @@
 			</tr>
 			{% for event in events %}
 			<tr>
+				<td><img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}"></td>
 				<td><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a></td>
 				<td>{{event.date}}</td>
 				<td>{{event.desc}}</td>

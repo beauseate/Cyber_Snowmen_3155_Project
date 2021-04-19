@@ -13,7 +13,7 @@ from flask import session
 from forms import RegisterForm, LoginForm, NewEventForm
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
-Images = join(dirname(realpath(__file__)),'Images')
+Images = join(dirname(realpath(__file__)),'Static\Images')
 ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
@@ -151,19 +151,17 @@ def new_event():
             user = session['user']
             user_id = session['user_id']
             
-            if 'file' not in request.files:
-                return redirect(request.url)
             file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
             if file.filename == '':
-                    
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename =file.filename
+                file.filename = 'default.png'
+                filename = 'default.png'
+            else:
+                filename = file.filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
                 
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id,filename)
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id, filename)
             db.session.add(newEvent)
             db.session.commit()
             # Redirect the user to the newly created event's page
