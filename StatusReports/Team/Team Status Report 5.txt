@@ -1,0 +1,30 @@
+Date 4/17/2021
+Team: Cyber Snowmen
+
+
+Goals from last week:
+Add more to the HTML, CSS for the appearance of the site
+Start implementing more backlog items
+Fix html and css errors
+Fix any python errors
+Adding user accounts based on Flask 6
+Fix Sprints from TA feedback
+
+This week(4/17/2021):
+Add more to the HTML, CSS for the appearance of the site
+Finish implementing the product backlogs
+Figure out how to present product
+Fix html and css errors
+Fix any python errors
+Implement product features
+
+Next week(4/26/2021):
+Add more to the HTML, CSS for the appearance of the site
+Prepare for presentation
+Fix html and css errors
+Fix any python errors
+
+
+Meeting Agenda:
+Finalize features on product backlog
+Figure out how to present product
