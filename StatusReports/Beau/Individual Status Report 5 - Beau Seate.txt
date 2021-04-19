@@ -1,0 +1,15 @@
+From last week (4/12/21):
+* Finalize work on User sign in page with added account functionality
+* Review TA feedback from Sprint 4 assignment
+* Work on Flask practice activity 6: User accounts
+
+
+Progress this week (4/18/21):
+*Got a lot done last week, will need to investigate CSS styling some more
+*Will add images to rest of html files
+*Might add user account page
+*Add rating system
+
+
+Goals this next week (4/18/21):
+*Review and test code for faulty input
