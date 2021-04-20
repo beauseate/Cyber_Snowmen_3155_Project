@@ -70,7 +70,7 @@ def get_event(e_id):
             if hasLiked:
                 return render_template('EventInfo.html', user=session['user'], event=eventExists, hasLiked=hasLiked)
             eventExists.likes += 1
-            eventLiked = Likes(generate_likeID(), eventExists.event_id, session['user_id'])
+            eventLiked = Likes(eventExists.event_id, session['user_id'])
             db.session.add(eventLiked)
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -86,12 +86,12 @@ def get_event(e_id):
             # See if the user has already RSVP'd to this event
             isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                           and session['user_id'] == RSVP.user_id).first()
-            # If the user is already attending, redner the current page with a dialog letting them know
+            # If the user is already attending, render the current page with a dialog letting them know
             if isRSVP:
                 return render_template('EventInfo.html', user=session['user'], event=eventExists, isAttending=True)
             # Otherwise add the user's RSVP to the database
             else:
-                attending = RSVP(generate_RSVP_ID(), eventExists.event_id, session['user_id'])
+                attending = RSVP(eventExists.event_id, session['user_id'])
                 db.session.add(attending)
                 db.session.commit()
                 flash("Congratulations! You have successfully RSVP'd to this event!")
@@ -343,29 +343,6 @@ def generate_eventID():
     while idTaken:
         id = randint(100000, 999999)
         idTaken = Event.query.filter_by(event_id=id).first()
-    return id
-'''
-
-DESC: Function to randomly generate Like IDs.
-
-'''
-def generate_likeID():
-    # Arbitrary because the Likes table needs a primary key
-    # Generate 5 digit number for likeID and ensure that all Likes have unique IDs
-    id = randint(100, 999)
-    idTaken = Likes.query.filter_by(likes_id=id).first()
-    while idTaken:
-        id = randint(100, 999)
-        idTaken = Likes.query.filter_by(likes_id=id).first()
-    return id
-
-def generate_RSVP_ID():
-    #Generate 3 digit number for RSVP_ID and ensure that all RSVP's have unique IDs
-    id = randint(100, 999)
-    idTaken = RSVP.query.filter_by(RSVP_id=id).first()
-    while idTaken:
-        id = randint(1000, 9999)
-        idTaken = RSVP.query.filter_by(RSVP_id=id).first()
     return id
 
 
