@@ -6,14 +6,14 @@ from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from database import db
-from models import User as User
+from models import User as User, Likes
 from models import Event as Event
 from random import randint
 from flask import session
 from forms import RegisterForm, LoginForm, NewEventForm
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
-Images = join(dirname(realpath(__file__)),'Images')
+Images = join(dirname(realpath(__file__)),'Static\Images')
 ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///website_app.db'
@@ -63,10 +63,24 @@ DESC: The route to each individual event filtered by it's event ID.
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
+        # Check to see if the user has already liked this event
+        hasLiked = db.session.query(Likes).filter_by(event_id=eventExists.event_id).first()
         # Increase the likes of an event if the upvote button is clicked
-        if request.method == 'POST' and request.form['upvote']:
+        if request.method == 'POST' and ('upvote' in request.form):
+            if hasLiked:
+                return render_template('EventInfo.html', user=session['user'], event=eventExists, hasLiked=hasLiked)
             eventExists.likes += 1
+            eventLiked = Likes(generate_likeID(), eventExists.event_id, session['user_id'])
+            db.session.add(eventLiked)
             db.session.commit()
+            return redirect(url_for('get_event', e_id=eventExists.event_id))
+        # Decrease the likes if the upvote button is clicked
+        if request.method == 'POST' and ('downvote' in request.form):
+            eventExists.likes -= 1
+            # Check if the user has already liked this event and if so, delete it from events they like
+            if hasLiked:
+                db.session.delete(hasLiked)
+                db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
@@ -93,7 +107,29 @@ DESC: View events that you have created.
 def my_events():
     if session.get('user'):
         my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
-        return render_template('my_events.html', events=my_events, user =session['user'])
+        return render_template('my_events.html', events=my_events, user=session['user'])
+    else:
+        return redirect(url_for('login'))
+'''
+
+TAB: MY EVENTS
+
+DESC: View events that you have created.
+
+'''
+@app.route('/events/favorites')
+def favorite_events():
+    if session.get('user'):
+        id = session.get('user_id')
+        # Run a query to get all events that a user likes
+        fav_events = db.session.query(Likes).filter_by(user_id=id).all()
+        events = []
+        # Iterate over all events that the user likes and add to a list
+        for i in fav_events:
+            events.append(db.session.query(Event).filter_by(event_id=i.event_id).one())
+        # Only need to return the template for my_events since this will filter by liked/favorited events instead
+        # of all events created by the user
+        return render_template('favorite_events.html', events=events, user=session['user'])
     else:
         return redirect(url_for('login'))
 
@@ -115,26 +151,24 @@ def new_event():
             user = session['user']
             user_id = session['user_id']
             
-            if 'file' not in request.files:
-                return redirect(request.url)
             file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
             if file.filename == '':
-                    
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename =file.filename
+                file.filename = 'default.png'
+                filename = 'default.png'
+            else:
+                filename = file.filename
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
                 
-            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id,filename)
+            newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id, filename)
             db.session.add(newEvent)
             db.session.commit()
             # Redirect the user to the newly created event's page
             return redirect(url_for('get_event', e_id=newEvent.event_id))
         else:
             # Display new_event view if something goes wrong
-            return render_template('new_event.html', form=eventForm)
+            return render_template('new_event.html', form=eventForm, user=session['user'])
     else:
         # Have the user login before creating an event
         return redirect(url_for('login'))
@@ -158,6 +192,38 @@ def delete_event(event_id):
         return redirect (url_for('my_events'))
     else:
         #user is not in session redirect to login
+        return redirect(url_for('login'))
+@app.route ('/events/edit/<event_id>', methods = ['POST', 'GET'])
+def edit_event(event_id):
+    if session.get('user'):
+        editForm = NewEventForm()
+        if editForm.validate_on_submit():
+            new_name = request.form['name']
+            new_date = request.form['date']
+            new_desc = request.form['desc']
+            user = session['user']
+            user_id = session['user_id']
+
+            if 'file' not in request.files:
+                return redirect(request.url)
+            file = request.files['file']
+
+            if file.filename == '':
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+            event = db.session.query(Event).filter_by(event_id=event_id).first()
+            event.name = new_name
+            event.date = new_date
+            event.desc = new_desc
+            event.filename = filename
+            db.session.commit()
+            return redirect(url_for('get_event', e_id=event.event_id))
+        else:
+            return render_template('edit_event.html', form=editForm, user=session['user'])
+    else:
         return redirect(url_for('login'))
 
 
@@ -253,7 +319,7 @@ def generate_userID():
 
 '''
 
-DESC: Function to randomly gernerate event IDs.
+DESC: Function to randomly generate event IDs.
 
 '''
 def generate_eventID():
@@ -263,6 +329,20 @@ def generate_eventID():
     while idTaken:
         id = randint(100000, 999999)
         idTaken = Event.query.filter_by(event_id=id).first()
+    return id
+'''
+
+DESC: Function to randomly generate Like IDs.
+
+'''
+def generate_likeID():
+    # Arbitrary because the Likes table needs a primary key
+    # Generate 5 digit number for likeID and ensure that all Likes have unique IDs
+    id = randint(100, 999)
+    idTaken = Likes.query.filter_by(likes_id=id).first()
+    while idTaken:
+        id = randint(100, 999)
+        idTaken = Likes.query.filter_by(likes_id=id).first()
     return id
 
 

@@ -11,3 +11,6 @@
 
 ## Week 4
 **Hang in there, a little under a month to go**
+
+## Week 5
+**A lot of progress made this past week, very proud of team**

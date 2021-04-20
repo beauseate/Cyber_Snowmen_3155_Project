@@ -7,6 +7,7 @@ class User(db.Model):
     first_name = db.Column("first_name", db.String(75))
     last_name = db.Column("Last_Name", db.String(75))
     password = db.Column("Password", db.String(255))
+    events_liked = db.relationship("Likes", backref="user", cascade="all, delete-orphan", lazy=True)
     events_attending = db.relationship("RSVP", backref="user", lazy=True)
 
     def __init__(self, id, email, first_name, last_name, password):
@@ -25,12 +26,12 @@ class Event(db.Model):
     reports = db.Column("Reports", db.Integer)
     desc = db.Column("Description", db.String(500))
     likes = db.Column("Likes", db.Integer)
-    filename= db.Column("filename", db.String(150))
+    filename = db.Column("filename", db.String(150), nullable=False, server_default='default.png')
 
     user_id = db.Column(db.Integer(), db.ForeignKey("user.User_ID"), nullable=False)
     events_attending = db.relationship("RSVP", backref="event",cascade="all, delete-orphan", lazy=True)
 
-    def __init__(self, event_id, date, name, rating, user, reports, desc, likes, user_id,filename):
+    def __init__(self, event_id, date, name, rating, user, reports, desc, likes, user_id, filename):
         self.event_id = event_id
         self.date = date
         self.name = name
@@ -40,7 +41,7 @@ class Event(db.Model):
         self.desc = desc
         self.likes = likes
         self.user_id = user_id
-        self.filename= filename
+        self.filename = filename
 
 class RSVP(db.Model):
     RSVP_id = db.Column("RSVP_ID", db.Integer, primary_key=True)
@@ -51,3 +52,15 @@ class RSVP(db.Model):
         self.RSVP_id = id
         self.event_id = event_id
         self.user_id = user_id
+
+
+class Likes(db.Model):
+    likes_id = db.Column("Likes_ID", db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
+
+    def __init__(self, id, event_id, user_id):
+        self.likes_id = id
+        self.event_id = event_id
+        self.user_id = user_id
+

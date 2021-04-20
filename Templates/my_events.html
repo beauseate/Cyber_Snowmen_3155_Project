@@ -22,17 +22,17 @@
 				<!-- Header navigation -->
 				<nav class="nav-ul">
 					<ul class="nav-ul-center">
-						<li><a href="/index">Home</a></li>
-						<li><a href="/events/my_events">My Events</a></li><!--will need a link to the my_events page once made -->
-						<li><a href="#">Favorites</a></li><!--will need a link to the my_events page once made -->
-						<li><a href="/events/create" >Create Event</a></li>
+						<li><a href="{{url_for('index') }}">Home</a></li>
+						<li><a href="{{url_for('my_events') }}">My Events</a></li>
+						<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
+						<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
 						{% if user%}
 						<li>
 							<a href = "{{url_for('logout') }}">Logout</a>
 						</li>
 						{%else%}
-						<li><a href = "#">Sign in</a></li>
-							<li><a href = "/register">Register</a></li>
+						<li><a href = "{{url_for('login') }}">Sign in</a></li>
+						<li><a href = "{{url_for('register') }}">Register</a></li>
 						{% endif%}
 	
 					</ul>			
@@ -64,6 +64,10 @@
 						<form action = "{{ url_for('delete_event', event_id = event.event_id) }}" method = "post">
 							<input type = "submit" value = "Delete">
 						</form>
+						<br>
+						<form action = "{{ url_for('edit_event', event_id = event.event_id) }}" method = "post">
+							<input type = "submit" value = "Edit">
+						</form>
 					</td>
                 </tr>
             </table>
@@ -77,12 +81,18 @@
 			<!-- Footer navigation -->
 			<nav class="nav-ul">
 				<ul>
-					<li><a href="/index">Home</a></li>
-					<li><a href="/events/my_events">My Events</a></li>
-					<li><a href="#">Favorites</a></li>
-					<li><a href="/events/create" >Create Event</a></li>
-                    <li><a href="/register" >Register</a></li>
-					<li><a href="#" >User Login</a></li>
+					<li><a href="{{url_for('index') }}">Home</a></li>
+					<li><a href="{{url_for('my_events') }}">My Events</a></li>
+					<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
+					<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
+					{% if user%}
+						<li>
+							<a href = "{{url_for('logout') }}">Logout</a>
+						</li>
+						{%else%}
+						<li><a href = "{{url_for('login') }}">Sign in</a></li>
+						<li><a href = "{{url_for('register') }}">Register</a></li>
+						{% endif%}
 				</ul>
 			</nav>
 			<!-- Copyright -->
