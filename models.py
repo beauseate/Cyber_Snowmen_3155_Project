@@ -48,8 +48,7 @@ class RSVP(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
 
-    def __init__(self, id, event_id, user_id):
-        self.RSVP_id = id
+    def __init__(self, event_id, user_id):
         self.event_id = event_id
         self.user_id = user_id
 
@@ -59,8 +58,7 @@ class Likes(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
 
-    def __init__(self, id, event_id, user_id):
-        self.likes_id = id
+    def __init__(self, event_id, user_id):
         self.event_id = event_id
         self.user_id = user_id
 
