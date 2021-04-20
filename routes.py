@@ -1,12 +1,12 @@
 import os  # os is used to get environment variables IP & PORT
 
 import bcrypt
-from flask import Flask  # Flask is the web app that we will customize
+from flask import Flask, flash  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from database import db
-from models import User as User, Likes
+from models import User as User, Likes, RSVP
 from models import Event as Event
 from random import randint
 from flask import session
@@ -82,6 +82,20 @@ def get_event(e_id):
                 db.session.delete(hasLiked)
                 db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
+        if request.method == 'POST' and ('rsvp' in request.form):
+            # See if the user has already RSVP'd to this event
+            isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
+                                                          and session['user_id'] == RSVP.user_id).first()
+            # If the user is already attending, redner the current page with a dialog letting them know
+            if isRSVP:
+                return render_template('EventInfo.html', user=session['user'], event=eventExists, isAttending=True)
+            # Otherwise add the user's RSVP to the database
+            else:
+                attending = RSVP(generate_RSVP_ID(), eventExists.event_id, session['user_id'])
+                db.session.add(attending)
+                db.session.commit()
+                flash("Congratulations! You have successfully RSVP'd to this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
     # Redirect them to the list of all events instead
@@ -343,6 +357,15 @@ def generate_likeID():
     while idTaken:
         id = randint(100, 999)
         idTaken = Likes.query.filter_by(likes_id=id).first()
+    return id
+
+def generate_RSVP_ID():
+    #Generate 3 digit number for RSVP_ID and ensure that all RSVP's have unique IDs
+    id = randint(100, 999)
+    idTaken = RSVP.query.filter_by(RSVP_id=id).first()
+    while idTaken:
+        id = randint(1000, 9999)
+        idTaken = RSVP.query.filter_by(RSVP_id=id).first()
     return id
 
 
