@@ -67,10 +67,28 @@
    				<button onclick="window.error.close();">Close</button>
   			 </dialog>
 		{% endif %}
+		{% if isAttending %}
+   			<dialog open id="attending">
+              	You are already attending this event!
+            	<button onclick="window.attending.close();">Close</button>
+          	</dialog>
+		{% endif %}
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="success">
+              			{{ message }}
+                		<button onclick="window.success.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+
 
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
   		 <input type="submit" name="downvote" value="Downvote" />
+		  <input type="submit" name ="rsvp" value="RSVP" />
       </form>
 	</main>
 
