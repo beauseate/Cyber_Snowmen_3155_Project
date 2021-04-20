@@ -43,6 +43,7 @@
 
 	<main>
 		<h1>{{event.name}} Details</h1>
+		<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
         <table>
             <tr>
                 <th>Description</th>
