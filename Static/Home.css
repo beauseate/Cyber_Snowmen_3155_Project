@@ -10,7 +10,21 @@ h2 {
 	text-align: center;
 }
 
+/*CSS for table alignment*/
 table {
-	width: 800px;
+	width: 1000px;
 	margin: 0 auto;
+}
+
+/*CSS for table row and table column*/
+td, th {
+	padding: 8px;
+}
+
+/*CSS for img in the table*/
+img.event_image {
+	display:block; 
+	margin: 0 auto; 
+	height: 100px;
+	width: auto;
 }
