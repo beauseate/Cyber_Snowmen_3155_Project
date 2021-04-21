@@ -73,6 +73,12 @@
             	<button onclick="window.attending.close();">Close</button>
           	</dialog>
 		{% endif %}
+		{% if notAttending %}
+			<dialog open id="notAttending">
+         		Cannot un-RSVP to an event when you're not going!
+   				<button onclick="window.notAttending.close();">Close</button>
+  			 </dialog>
+		{% endif %}
 		{% with messages = get_flashed_messages() %}
   			{% if messages %}
     			{% for message in messages %}
@@ -85,10 +91,12 @@
 		{% endwith %}
 
 
+
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
   		 <input type="submit" name="downvote" value="Downvote" />
 		  <input type="submit" name ="rsvp" value="RSVP" />
+		  <input type="submit" name ="un-rsvp" value="Un-RSVP" />
       </form>
 	</main>
 
