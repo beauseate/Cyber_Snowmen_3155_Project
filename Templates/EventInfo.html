@@ -61,34 +61,22 @@
             </tr>
         </table>
 		<br>
-		{% if hasLiked %}
-			<dialog open id="error">
-         		Cannot like an event more than once!
-   				<button onclick="window.error.close();">Close</button>
-  			 </dialog>
-		{% endif %}
-		{% if isAttending %}
-   			<dialog open id="attending">
-              	You are already attending this event!
-            	<button onclick="window.attending.close();">Close</button>
-          	</dialog>
-		{% endif %}
 		{% with messages = get_flashed_messages() %}
   			{% if messages %}
     			{% for message in messages %}
-      				<dialog open id="success">
+      				<dialog open id="messages">
               			{{ message }}
-                		<button onclick="window.success.close();">Close</button>
+                		<button onclick="window.messages.close();">Close</button>
           			</dialog>
     			{% endfor %}
   			{% endif %}
 		{% endwith %}
 
-
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
-  		 <input type="submit" name="downvote" value="Downvote" />
-		  <input type="submit" name ="rsvp" value="RSVP" />
+  		  <input type="submit" name="downvote" value="Downvote" /> ||
+		  <input type="submit" name ="rsvp" value="RSVP" /> ||
+		  <input type="submit" name ="un-rsvp" value="Un-RSVP" />
       </form>
 	</main>
 

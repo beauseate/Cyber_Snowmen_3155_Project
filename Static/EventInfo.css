@@ -13,3 +13,7 @@ table {
     width: 200px; /* you can use % */
     height: auto;
 }
+dialog {
+  border: solid gray 2px;
+  border-radius: 10px;
+}

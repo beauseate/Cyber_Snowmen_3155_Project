@@ -65,15 +65,21 @@ def get_event(e_id):
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
         hasLiked = db.session.query(Likes).filter_by(event_id=eventExists.event_id).first()
+        # Check to see if the user has already RSVP'd to this event
+        isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
+                                                      and session['user_id'] == RSVP.user_id).first()
         # Increase the likes of an event if the upvote button is clicked
         if request.method == 'POST' and ('upvote' in request.form):
             if hasLiked:
-                return render_template('EventInfo.html', user=session['user'], event=eventExists, hasLiked=hasLiked)
-            eventExists.likes += 1
-            eventLiked = Likes(eventExists.event_id, session['user_id'])
-            db.session.add(eventLiked)
-            db.session.commit()
-            return redirect(url_for('get_event', e_id=eventExists.event_id))
+                flash("You cannot like an event more than once!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
+            else:
+                eventExists.likes += 1
+                eventLiked = Likes(eventExists.event_id, session['user_id'])
+                db.session.add(eventLiked)
+                db.session.commit()
+                flash("You like this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('downvote' in request.form):
             eventExists.likes -= 1
@@ -81,20 +87,31 @@ def get_event(e_id):
             if hasLiked:
                 db.session.delete(hasLiked)
                 db.session.commit()
+            flash("You dislike this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('rsvp' in request.form):
-            # See if the user has already RSVP'd to this event
-            isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
-                                                          and session['user_id'] == RSVP.user_id).first()
             # If the user is already attending, render the current page with a dialog letting them know
             if isRSVP:
-                return render_template('EventInfo.html', user=session['user'], event=eventExists, isAttending=True)
+                flash("You are already attending this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
             # Otherwise add the user's RSVP to the database
             else:
                 attending = RSVP(eventExists.event_id, session['user_id'])
                 db.session.add(attending)
                 db.session.commit()
                 flash("Congratulations! You have successfully RSVP'd to this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
+        if request.method == 'POST' and ('un-rsvp' in request.form):
+            if isRSVP:
+                # Need to access the RSVP relational table since isRSVP is a Query object and delete it
+                db.session.delete(isRSVP.RSVP)
+                db.session.commit()
+                # Send a message to the user
+                flash("You have successfully un-RSVP'd from this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
+            else:
+                # User cannot delete an RSVP if they weren't RSVP'd already
+                flash("You cannot un-RSVP to an event you weren't going to!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
