@@ -42,6 +42,17 @@
 	
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+
 		<h1>{{event.name}} Details</h1>
 		<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
         <table>
@@ -60,17 +71,7 @@
 				<td>{{ event.likes}}</td>
             </tr>
         </table>
-		<br>
-		{% with messages = get_flashed_messages() %}
-  			{% if messages %}
-    			{% for message in messages %}
-      				<dialog open id="messages">
-              			{{ message }}
-                		<button onclick="window.messages.close();">Close</button>
-          			</dialog>
-    			{% endfor %}
-  			{% endif %}
-		{% endwith %}
+
 
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
