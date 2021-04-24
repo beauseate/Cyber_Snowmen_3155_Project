@@ -190,7 +190,12 @@ def new_event():
                 filename = 'default.png'
             else:
                 filename = file.filename
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                if allowed_file(filename):
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                else:
+                    # Let the user know they selected an invalid file
+                    flash("Please select a valid image file (.pdf, .png, .jpg, .jpeg, .gif)")
+                    return redirect(url_for('new_event'))
                 
             newEvent = Event(generate_eventID(), date, name, 0.0, user, 0, desc, 0, user_id, filename)
             db.session.add(newEvent)
@@ -228,6 +233,7 @@ def delete_event(event_id):
 def edit_event(event_id):
     if session.get('user'):
         editForm = NewEventForm()
+        event = db.session.query(Event).filter_by(event_id=event_id).first()
         if editForm.validate_on_submit():
             new_name = request.form['name']
             new_date = request.form['date']
@@ -235,15 +241,19 @@ def edit_event(event_id):
             user = session['user']
             user_id = session['user_id']
 
-            if 'file' not in request.files:
-                return redirect(request.url)
             file = request.files['file']
 
             if file.filename == '':
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
+                file.filename = 'default.png'
+                filename = 'default.png'
+            else:
                 filename = file.filename
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                if allowed_file(filename):
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                else:
+                    # Let the user know they selected an invalid file
+                    flash("Please select a valid image file (.pdf, .png, .jpg, .jpeg, .gif)")
+                    return redirect(url_for('edit_event', event_id=event.event_id))
 
             event = db.session.query(Event).filter_by(event_id=event_id).first()
             event.name = new_name

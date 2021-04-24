@@ -40,6 +40,17 @@
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+
 	<div class="formwrapper">
             <h2 class="title">Create Event</h2>
             <form method="POST" enctype=multipart/form-data>
@@ -77,7 +88,6 @@
                 {{ form.submit }}
             </form>
 	</div>
-        
 	</main>
 
 	<footer>
