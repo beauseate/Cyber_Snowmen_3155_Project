@@ -81,6 +81,11 @@ def get_event(e_id):
                 db.session.commit()
                 flash("You like this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
+        if request.method == 'POST' and ('report' in request.form):
+            eventExists.reports = 1
+            db.session.commit()
+            flash("Event Reported!")
+            return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('downvote' in request.form):
             eventExists.likes -= 1
