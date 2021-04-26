@@ -116,7 +116,7 @@ def get_event(e_id):
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         if comment_form.validate_on_submit():
             comment_text = request.form['comment']
-            new_record = Comments(eventExists.event_id, session['user_id'], comment_text)
+            new_record = Comments(eventExists.event_id, comment_text, session['user'])
             db.session.add(new_record)
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))

@@ -77,7 +77,8 @@
    <h2>Comments</h2>
    <ul>
    {% for comment in event.comments %}
-     <li>{{ comment.content }}</li>
+	<h2>{{ comment.first_name }} Says:</h2>
+    <li>{{ comment.content }}</li>
    {% endfor %}
    </ul>
   {% endif %}
