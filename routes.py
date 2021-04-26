@@ -6,11 +6,11 @@ from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from database import db
-from models import User as User, Likes, RSVP
+from models import User as User, Likes, RSVP, Comments
 from models import Event as Event
 from random import randint
 from flask import session
-from forms import RegisterForm, LoginForm, NewEventForm
+from forms import RegisterForm, LoginForm, NewEventForm, CommentForm
 from os.path import join, dirname, realpath
 from werkzeug.utils import secure_filename
 Images = join(dirname(realpath(__file__)),'Static\Images')
@@ -68,6 +68,7 @@ def get_event(e_id):
         # Check to see if the user has already RSVP'd to this event
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
+        comment_form = CommentForm()
         # Increase the likes of an event if the upvote button is clicked
         if request.method == 'POST' and ('upvote' in request.form):
             if hasLiked:
@@ -113,7 +114,13 @@ def get_event(e_id):
                 # User cannot delete an RSVP if they weren't RSVP'd already
                 flash("You cannot un-RSVP to an event you weren't going to!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
-        return render_template('EventInfo.html', user=session['user'], event=eventExists)
+        if comment_form.validate_on_submit():
+            comment_text = request.form['comment']
+            new_record = Comments(eventExists.event_id, session['user_id'], comment_text)
+            db.session.add(new_record)
+            db.session.commit()
+            return redirect(url_for('get_event', e_id=eventExists.event_id))
+        return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
     # Redirect them to the list of all events instead
     elif session.get('user') and (not eventExists):
