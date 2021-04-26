@@ -1,0 +1,10 @@
+Goals from last week:
+•	Squash any bugs found in the website
+•	Help implement any remaining bonus features
+•	Implement more CSS to style views
+Progress for this week:
+•	Fixed some bugs in our code
+•	Added RSVP function
+Goals for next week:
+•	Ensure that all features are addeded and bug tested
+•	Touch up the CSS for the site
