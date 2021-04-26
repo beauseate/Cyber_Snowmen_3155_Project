@@ -42,7 +42,19 @@
 	
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+
 		<h1>{{event.name}} Details</h1>
+		<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
         <table>
             <tr>
                 <th>Description</th>
@@ -59,18 +71,40 @@
 				<td>{{ event.likes}}</td>
             </tr>
         </table>
-		<br>
-		{% if hasLiked %}
-			<dialog open id="error">
-         		Cannot like an event more than once!
-   				<button onclick="window.error.close();">Close</button>
-  			 </dialog>
-		{% endif %}
+
+		{% if event.comments %}
+  {% if event.comments|length > 0 %}
+   <h2>Comments</h2>
+   <ul>
+   {% for comment in event.comments %}
+	<h2>{{ comment.first_name }} Says:</h2>
+    <li>{{ comment.content }}</li>
+   {% endfor %}
+   </ul>
+  {% endif %}
+          {% endif %}
+
 
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
-  		 <input type="submit" name="downvote" value="Downvote" />
+  		  <input type="submit" name="downvote" value="Downvote" /> ||
+		  <input type="submit" name ="rsvp" value="RSVP" /> ||
+		  <input type="submit" name ="un-rsvp" value="Un-RSVP" /> ||
+		  <input type="submit" name ="report" value="report" />
       </form>
+
+		{% if form %}
+   <form method="post">
+      <div class="formwrapper">
+      <h2 class="title">Add a comment</h2>
+      <div class="form-field">
+         {{ form.comment.label }} <br/> {{ form.comment }}
+      </div>
+         {{ form.submit }}
+      </div>
+   </form>
+{% endif %}
+
 	</main>
 
 	<footer>

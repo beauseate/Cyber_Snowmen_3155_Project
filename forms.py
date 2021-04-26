@@ -87,3 +87,12 @@ class NewEventForm(FlaskForm):
         else:
             if month == 2 and day > 28:
                 raise ValidationError('Day cannot be greater than 28')
+
+class CommentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    comment = TextAreaField('Comment',validators=[Length(min=1)])
+
+    submit = SubmitField('Add Comment')
+
