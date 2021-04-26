@@ -72,6 +72,17 @@
             </tr>
         </table>
 
+		{% if event.comments %}
+  {% if event.comments|length > 0 %}
+   <h2>Comments</h2>
+   <ul>
+   {% for comment in event.comments %}
+     <li>{{ comment.content }}</li>
+   {% endfor %}
+   </ul>
+  {% endif %}
+          {% endif %}
+
 
       <form method = "post">
           <input type="submit" name="upvote" value="Upvote" /> ||
@@ -79,6 +90,19 @@
 		  <input type="submit" name ="rsvp" value="RSVP" /> ||
 		  <input type="submit" name ="un-rsvp" value="Un-RSVP" />
       </form>
+
+		{% if form %}
+   <form method="post">
+      <div class="formwrapper">
+      <h2 class="title">Add a comment</h2>
+      <div class="form-field">
+         {{ form.comment.label }} <br/> {{ form.comment }}
+      </div>
+         {{ form.submit }}
+      </div>
+   </form>
+{% endif %}
+
 	</main>
 
 	<footer>
