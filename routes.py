@@ -5,6 +5,8 @@ from flask import Flask, flash  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
+from sqlalchemy import or_
+
 from database import db
 from models import User as User, Likes, RSVP, Comments
 from models import Event as Event
@@ -41,7 +43,9 @@ def index():
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
-        events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
+        # events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
+        events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
+                                    Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
         if session.get('user'):
             return render_template('Home.html', events=events, user=session['user'])
         else:
