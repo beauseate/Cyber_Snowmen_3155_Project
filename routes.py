@@ -88,17 +88,15 @@ def get_event(e_id):
         if request.method == 'POST' and ('report' in request.form):
             eventExists.reports += 1
             if eventExists.reports > 9:
-                flash("The event has been reported too many times and will now be deleted")
                 eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
                 db.session.delete(eventExists)
                 db.session.commit()
-                
-                flash("The event has been reported too many times and will now be deleted")
-                return redirect(url_for('index', events=listEvents, user=session['user']))
-                
-            db.session.commit()
-            flash("Event Reported!")
-            return redirect(url_for('get_event', e_id=eventExists.event_id))
+                flash("Event has been reported too many times! It is now removed.")
+                return redirect(url_for('new_event'))
+            else:  
+                db.session.commit()
+                flash("Event Reported!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('unfavorite' in request.form):
             eventExists.likes -= 1
