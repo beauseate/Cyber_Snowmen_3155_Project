@@ -67,11 +67,11 @@ class Likes(db.Model):
 class Comments(db.Model):
     comment_id = db.Column("Comment_ID", db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"), nullable=False)
+    first_name = db.Column(db.String, db.ForeignKey("user.first_name"))
     content = db.Column(db.VARCHAR, nullable=False)
 
-    def __init__(self, event_id, user_id, content):
+    def __init__(self, event_id, content, first_name):
         self.event_id = event_id
-        self.user_id = user_id
         self.content = content
+        self.first_name = first_name
 

@@ -1,0 +1,15 @@
+From last week (4/18/21):
+*Got a lot done last week, will need to investigate CSS styling some more
+*Will add images to rest of html files
+*Might add user account page
+*Add rating system
+
+
+Progress this week (4/25/21):
+* Investigate rating feautre with JS implementation
+* Help with CSS and sorting
+
+
+Goals this next week (4/25/21):
+* Review and test code for faulty input
+* Finalize presentation parts
