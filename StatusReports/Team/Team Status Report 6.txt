@@ -1,0 +1,25 @@
+Goals from last week:
+Add more to the HTML, CSS for the appearance of the site
+Finish implementing the product backlogs
+Figure out how to present product
+Fix html and css errors
+Fix any python errors
+Implement product features
+
+This week (4-25-21)
+Finish up some last minute CSS stylings.Double check for bugs in our main code.
+Add event rating feature
+Add sorting feature with filters of name and date
+Finalize any last minute features
+
+
+Next week:
+Have the project ready to be presented.
+Discuss roles in presentation. Maybe a few practice runs?
+
+
+
+
+Meeting Agenda:
+Finalize features on product backlog
+Figure out how to present product

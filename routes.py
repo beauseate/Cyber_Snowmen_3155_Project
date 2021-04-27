@@ -69,17 +69,17 @@ def get_event(e_id):
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
-        # Increase the likes of an event if the upvote button is clicked
-        if request.method == 'POST' and ('upvote' in request.form):
+        # Increase the favortie count of an event if the favorite button is clicked
+        if request.method == 'POST' and ('favorite' in request.form):
             if hasLiked:
-                flash("You cannot like an event more than once!")
+                flash("You cannot favorite an event more than once!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             else:
                 eventExists.likes += 1
                 eventLiked = Likes(eventExists.event_id, session['user_id'])
                 db.session.add(eventLiked)
                 db.session.commit()
-                flash("You like this event!")
+                flash("You favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('report' in request.form):
             eventExists.reports += 1
@@ -96,13 +96,13 @@ def get_event(e_id):
             flash("Event Reported!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
-        if request.method == 'POST' and ('downvote' in request.form):
+        if request.method == 'POST' and ('unfavorite' in request.form):
             eventExists.likes -= 1
             # Check if the user has already liked this event and if so, delete it from events they like
             if hasLiked:
                 db.session.delete(hasLiked)
                 db.session.commit()
-            flash("You dislike this event!")
+            flash("You unfavorited this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('rsvp' in request.form):
             # If the user is already attending, render the current page with a dialog letting them know

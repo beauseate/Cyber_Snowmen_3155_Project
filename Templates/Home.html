@@ -64,6 +64,7 @@
 				<th>Event Description</th>
 				<th>Created By</th>
 				<th>Event Rating</th>
+				<th>Event Favorties</th>
 			</tr>
 			{% for event in events %}
 			<tr>
@@ -73,6 +74,7 @@
 				<td>{{event.desc}}</td>
 				<td>{{event.user}}</td>
 				<td>{{event.rating}}</td>
+				<td>{{event.likes}}</td>
 			</tr>
 			{% endfor %}
 		</table>
