@@ -1,0 +1,15 @@
+From last week:
+* Fixed some CSS and HTML
+* Implement product backlogs
+* Implement product features
+
+Progress this week:
+* Fixed some CSS and HTML
+* Implement product backlogs
+* Implement product features
+
+Goals this next week:
+* Fix some CSS and HTML
+* Fix bugs
+* Plan on how to present
+

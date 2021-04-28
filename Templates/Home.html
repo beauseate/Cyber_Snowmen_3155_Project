@@ -43,6 +43,14 @@
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
+		<aside>
+			<div id="notif">
+				<h1>Notifications</h1>
+				<hr>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui erat, ornare sit amet bibendum ac, ultricies ut augue. Integer vitae nisi vulputate, ultricies mauris sed, aliquam odio. In efficitur pretium libero, vel auctor dui scelerisque in. Sed enim augue, maximus eget erat tempor, dictum accumsan risus. Proin consequat sem a ligula finibus, eu fringilla dolor fringilla. Donec arcu neque, convallis ac augue ut, tristique venenatis mauris. Aliquam erat volutpat.</p>
+			</div>
+		</aside>
+
 		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>
 
         <h2>Use this site to create and RSVP to nearby events.</h2>
@@ -56,7 +64,7 @@
 		<h1>
 			List of Events
 		</h1>
-		<table>
+		<!-- <table>
 			<tr>
 				<th>Event Picture</th>
 				<th>Event Name</th>
@@ -75,7 +83,21 @@
 				<td>{{event.rating}}</td>
 			</tr>
 			{% endfor %}
-		</table>
+		</table> -->
+		{% for event in events %}
+		<div class="Events">
+			<div class="events-left">
+				<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
+			</div>
+			<div class="events-right">
+				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
+				<p id="event-date">{{event.date}}</p>
+				<p id="event-desc">{{event.desc}}</p>
+				<p id="event-user">Event Created By: {{event.user}}</p>
+				<p id="event-rating">Rating: {{event.rating}}</p>
+			</div>	
+		</div>
+		{% endfor %}
 	</main>
 
 	<footer>

@@ -1,5 +1,5 @@
 main {
-	padding-bottom: 25px;
+	padding-bottom: 50px;
 }
 
 h1 {
@@ -10,21 +10,76 @@ h2 {
 	text-align: center;
 }
 
+/*Notification Section CSS*/
+aside {
+	width: 20%;
+	height: auto;
+  	padding-left: 15px;
+ 	margin-left: 15px;
+ 	margin-right: 15px;
+ 	margin-bottom: 15px;
+ 	position: relative;
+  	float: right;
+  	border: solid;
+  	border-radius: 8px;
+
+}
+
+div#notif p {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+hr {
+	width: 50%;
+}
+
 /*CSS for table alignment*/
-table {
+/*table {
 	width: 1000px;
 	margin: 0 auto;
-}
+}*/
 
 /*CSS for table row and table column*/
-td, th {
+/*td, th {
 	padding: 8px;
+}*/
+
+/*CSS for Events*/
+div.Events {
+	border: solid;
+	border-radius: 8px;
+	padding: 5px 5px 0 5px;
+	margin-left: 10%;
+	display: inline-block;
+	width: 60%;
+	margin-bottom: 10px;
+	font-size: 20px;
 }
 
-/*CSS for img in the table*/
+div.events-left {
+	float: left;
+	padding-left: 15px;
+}
+
+#event-title {
+	font-size: 24px;
+	text-align: center;
+}
+
+div.events-right {
+	float: left;
+	padding-left: 25px;
+	padding-right: 15px;
+	width: 25%;
+}
+
+/*CSS for img*/
 img.event_image {
-	display:block; 
+	display: block; 
 	margin: 0 auto; 
-	height: 100px;
-	width: auto;
+	height: 200px;
+	width: 200px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
