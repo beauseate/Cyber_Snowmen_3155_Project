@@ -17,3 +17,31 @@ dialog {
   border: solid gray 2px;
   border-radius: 10px;
 }
+
+/* Rating CSS */
+.rating{
+  display: flex;
+  color: #9e9e9e;
+  font-size: 58px;
+}
+[type=radio]{
+  display: none;
+}
+form label{
+  margin:0 5px;
+}
+form label:hover{
+  color: orange;
+}
+[type="submit"]{
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  padding: 5px ;
+  margin-left: 15px;
+}
+[type="submit"]:hover{
+    background-color: black;
+  color: white;
+  border: 2px solid gray;
+}
