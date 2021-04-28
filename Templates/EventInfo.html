@@ -61,7 +61,7 @@
                 <th>Date</th>
                 <th>Created by</th>
                 <th>Rating</th>
-				<th>Likes</th>
+				<th>Number of Favorites</th>
             </tr>
             <tr>
                 <td>{{ event.desc }}</td>
@@ -86,8 +86,8 @@
 
 
       <form method = "post">
-          <input type="submit" name="upvote" value="Upvote" /> ||
-  		  <input type="submit" name="downvote" value="Downvote" /> ||
+          <input type="submit" name="favorite" value="Favorite" /> ||
+  		  <input type="submit" name="unfavorite" value="Unfavorite" /> ||
 		  <input type="submit" name ="rsvp" value="RSVP" /> ||
 		  <input type="submit" name ="un-rsvp" value="Un-RSVP" /> ||
 		  <input type="submit" name ="report" value="report" />

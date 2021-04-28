@@ -5,6 +5,8 @@ from flask import Flask, flash  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
+from sqlalchemy import or_
+
 from database import db
 from models import User as User, Likes, RSVP, Comments
 from models import Event as Event
@@ -41,7 +43,9 @@ def index():
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
-        events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
+        # events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
+        events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
+                                    Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
         if session.get('user'):
             return render_template('Home.html', events=events, user=session['user'])
         else:
@@ -69,31 +73,38 @@ def get_event(e_id):
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
-        # Increase the likes of an event if the upvote button is clicked
-        if request.method == 'POST' and ('upvote' in request.form):
+        # Increase the favortie count of an event if the favorite button is clicked
+        if request.method == 'POST' and ('favorite' in request.form):
             if hasLiked:
-                flash("You cannot like an event more than once!")
+                flash("You cannot favorite an event more than once!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             else:
                 eventExists.likes += 1
                 eventLiked = Likes(eventExists.event_id, session['user_id'])
                 db.session.add(eventLiked)
                 db.session.commit()
-                flash("You like this event!")
+                flash("You favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('report' in request.form):
-            eventExists.reports = 1
-            db.session.commit()
-            flash("Event Reported!")
-            return redirect(url_for('get_event', e_id=eventExists.event_id))
+            eventExists.reports += 1
+            if eventExists.reports > 9:
+                eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
+                db.session.delete(eventExists)
+                db.session.commit()
+                flash("Event has been reported too many times! It is now removed.")
+                return redirect(url_for('new_event'))
+            else:  
+                db.session.commit()
+                flash("Event Reported!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
-        if request.method == 'POST' and ('downvote' in request.form):
+        if request.method == 'POST' and ('unfavorite' in request.form):
             eventExists.likes -= 1
             # Check if the user has already liked this event and if so, delete it from events they like
             if hasLiked:
                 db.session.delete(hasLiked)
                 db.session.commit()
-            flash("You dislike this event!")
+            flash("You unfavorited this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('rsvp' in request.form):
             # If the user is already attending, render the current page with a dialog letting them know
