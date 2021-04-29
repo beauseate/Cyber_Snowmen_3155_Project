@@ -9,7 +9,7 @@ from sqlalchemy import or_, func
 from flask import get_flashed_messages
 
 from database import db
-from models import User as User, Likes, RSVP, Comments, Rating
+from models import User as User, Likes, RSVP, Comments, Rating, Reports
 from models import Event as Event
 from random import randint
 from flask import session
@@ -70,6 +70,9 @@ def get_event(e_id):
         # Check to see if the user has already liked this event
         hasFavorited = db.session.query(Event, Likes).filter(eventExists.event_id == Likes.event_id
                                                       ).filter(session['user_id'] == Likes.user_id).first()
+        #check for reported status
+        hasReported = db.session.query(Event, Reports).filter(eventExists.event_id == Reports.event_id
+                                                      ).filter(session['user_id'] == Reports.user_id).first()
         # Check to see if the user has already rated this event
         hasRated = db.session.query(Event, Rating).filter(eventExists.event_id == Rating.event_id
                                                       ).filter(session['user_id'] == Rating.user_id).first()
@@ -90,17 +93,24 @@ def get_event(e_id):
                 flash("You favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('report' in request.form):
-            eventExists.reports += 1
-            if eventExists.reports > 9:
-                eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
-                db.session.delete(eventExists)
-                db.session.commit()
-                flash("Event has been reported too many times! It is now removed.")
-                return redirect(url_for('index'))
-            else:  
-                db.session.commit()
-                flash("Event Reported!")
+            if hasReported:
+                flash("The event has already been reported!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
+            else:
+                eventExists.reports += 1
+                reported = Reports(eventExists.event_id, session['user_id'])
+                db.session.add(reported)
+                db.session.commit
+                if eventExists.reports > 3:
+                    eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
+                    db.session.delete(eventExists)
+                    db.session.commit()
+                    flash("Event has been reported too many times! It is now removed.")
+                    return redirect(url_for('index'))
+                else:  
+                    db.session.commit()
+                    flash("Event Reported!")
+                    return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('unfavorite' in request.form):
             eventExists.likes -= 1
