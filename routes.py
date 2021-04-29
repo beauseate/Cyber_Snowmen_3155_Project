@@ -5,10 +5,10 @@ from flask import Flask, flash  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 from database import db
-from models import User as User, Likes, RSVP, Comments
+from models import User as User, Likes, RSVP, Comments, Rating
 from models import Event as Event
 from random import randint
 from flask import session
@@ -69,6 +69,9 @@ def get_event(e_id):
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
         hasLiked = db.session.query(Likes).filter_by(event_id=eventExists.event_id).first()
+        # Check to see if the user has already rated this event
+        hasRated = db.session.query(Event, Rating).filter(eventExists.event_id == Rating.event_id
+                                                      ).filter(session['user_id'] == Rating.user_id).first()
         # Check to see if the user has already RSVP'd to this event
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
@@ -130,6 +133,37 @@ def get_event(e_id):
                 # User cannot delete an RSVP if they weren't RSVP'd already
                 flash("You cannot un-RSVP to an event you weren't going to!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
+                
+        if request.method == 'POST' and ('rating' in request.form):
+            # Get rating number from rating form based on stars selected
+            userRating = request.form['rating']
+            # Turn rating into int
+            userRating = int(userRating)
+            # If the user has already rated, render the current page with updated rating
+            if hasRated:
+                updateRating = db.session.query(Rating).filter(Rating.event_id == eventExists.event_id).filter(Rating.user_id == session['user_id']).first()
+                updateRating.ratingNum = userRating
+                ratingAvg = db.session.query(func.avg(Rating.ratingNum)).\
+                join(Event).\
+                filter(Event.event_id == eventExists.event_id)
+                db.session.commit()
+                eventExists.rating = ratingAvg
+                db.session.commit()
+                flash("Your rating has been updated!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
+            # Otherwise add the user's rating to the database
+            else:
+                newRate = Rating(eventExists.event_id, session['user_id'], userRating)
+                db.session.add(newRate)
+                db.session.commit()
+                ratingAvg = db.session.query(func.avg(Rating.ratingNum)).\
+                join(Event).\
+                filter(Event.event_id == eventExists.event_id)
+                eventExists.rating = ratingAvg
+                db.session.commit()
+                flash("Congratulations! You have successfully rated this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
+
         if comment_form.validate_on_submit():
             comment_text = request.form['comment']
             new_record = Comments(eventExists.event_id, comment_text, session['user'])

@@ -22,7 +22,7 @@ class Event(db.Model):
     event_id = db.Column("Event_ID", db.Integer, primary_key=True)
     date = db.Column("Date", db.String(10))
     name = db.Column("Name", db.String(75))
-    rating = db.Column("Rating", db.Float)
+    rating = db.Column("Rating", db.DECIMAL(1,2))
     user = db.Column("User", db.String(50))
     reports = db.Column("Reports", db.Integer)
     desc = db.Column("Description", db.String(500))
@@ -75,3 +75,15 @@ class Comments(db.Model):
         self.content = content
         self.first_name = first_name
 
+
+class Rating(db.Model):
+    rating_id = db.Column("Rating_ID", db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
+    ratingNum = db.Column("Event Rating",db.Integer)
+
+
+    def __init__(self, event_id, user_id, ratingNum):
+        self.event_id = event_id
+        self.user_id = user_id
+        self.ratingNum = ratingNum
