@@ -19,6 +19,7 @@
 <body>
 	<div class="wrapper">
 		<header>
+			
 			<!-- Header contents -->
 			<a href="#" class="page-title">Home Page</a>
 			<!-- Header navigation -->
@@ -37,6 +38,16 @@
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
 		<aside>
 			<div id="notif">
 				<h1>Notifications</h1>

@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from sqlalchemy import or_, func
+from flask import get_flashed_messages
 
 from database import db
 from models import User as User, Likes, RSVP, Comments, Rating
@@ -40,6 +41,7 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    get_flashed_messages()
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
@@ -53,6 +55,7 @@ def index():
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
+        flash("Event has been reported too many times! It is now removed.")
         return render_template('Home.html', events=listEvents, user=session['user'])
     else:
         listEvents = db.session.query(Event).all()
@@ -96,7 +99,7 @@ def get_event(e_id):
                 db.session.delete(eventExists)
                 db.session.commit()
                 flash("Event has been reported too many times! It is now removed.")
-                return redirect(url_for('new_event'))
+                return redirect(url_for('index'))
             else:  
                 db.session.commit()
                 flash("Event Reported!")
