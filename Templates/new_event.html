@@ -55,7 +55,7 @@
 	<div class="formwrapper">
             <h1 class="title">Create Event</h1>
             <form method="POST" enctype=multipart/form-data>
-                <div class="form-field">{{ form.name.label }} {{ form.name }}
+                <div class="form-field">{{ form.name.label }}<br>{{ form.name }}
                     {% if form.name.errors %}
                     <ul class="errors">
                         {% for error in form.name.errors %}
@@ -64,7 +64,7 @@
                     </ul>
                     {% endif %}
                 </div>
-                <div class="form-field">{{ form.desc.label }} {{ form.desc }}
+                <div class="form-field">{{ form.desc.label }}<br>{{ form.desc }}
                     {% if form.desc.errors %}
                     <ul class="errors">
                         {% for error in form.desc.errors %}
@@ -73,7 +73,7 @@
                     </ul>
                     {% endif %}
                 </div>
-                <div class="form-field">{{ form.date.label }} {{ form.date }}
+                <div class="form-field">{{ form.date.label }}<br>{{ form.date }}
                     {% if form.date.errors %}
                     <ul class="errors">
                         {% for error in form.date.errors %}
@@ -85,7 +85,7 @@
 				
 					<input type=file name=file>
 
-				
+				<br>
                 {{ form.submit }}
             </form>
 	</div>

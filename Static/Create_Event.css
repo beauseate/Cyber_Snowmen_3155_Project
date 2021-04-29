@@ -4,9 +4,50 @@ main {
 
 h1 {
 	text-align: center;
+	margin-bottom: 0;
+}
+
+/*form CSS*/
+form {
+	border: solid 5px;
+	padding: 20px 20px 20px 20px;
+}
+
+label {
+	font-size: 20px;
 }
 
 .formwrapper {
-	width: 60%;
-	height: auto;
+	margin-top: 0;
+	margin: 0 auto;
+    width: 450px;
+}
+
+.form-field {
+	padding-bottom: 20px;
+}
+
+input[type=text] {
+	width: 96%;
+	height: 25px;
+	font-size: 14px;
+}
+
+input#file-upload-button {
+	padding: 10px 10px;
+}
+
+input#submit {
+	margin-top: 20px;
+	width: 98%;
+	height: 50px;
+	font-size: 26px;
+	text-transform: uppercase;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+input#submit:hover {
+	opacity: 0.8;
+  	transition: 0.3s;
 }

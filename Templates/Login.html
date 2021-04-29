@@ -10,6 +10,7 @@
     <meta charset="utf-8">
     <!-- External Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     
 </head>
 
@@ -40,9 +41,9 @@
         </header>		<!-- END HEADER - COPY FRIENDLY!-->
         <main>
             <div class="formwrapper">
-                <h2 class="title">Login</h2>
+                <h1 class="title">Login</h1>
                 <form method="POST" action="/login">
-                    <div class="form-field">{{ form.email.label }} {{ form.email }}
+                    <div class="form-field">{{ form.email.label }}<br>{{ form.email }}
                         {% if form.email.errors %}
                         <ul class="errors">
                             {% for error in form.email.errors %}
@@ -51,7 +52,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="form-field">{{ form.password.label }} {{ form.password }}
+                    <div class="form-field">{{ form.password.label }}<br>{{ form.password }}
                         {% if form.password.errors %}
                         <ul class="errors">
                             {% for error in form.password.errors %}

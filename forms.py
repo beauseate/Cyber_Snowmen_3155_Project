@@ -39,10 +39,10 @@ class LoginForm(FlaskForm):
     class Meta:
         csrf = False
 
-    email = StringField('Email', validators=[
+    email = StringField('Email:', validators=[
         DataRequired()])
 
-    password = PasswordField('Password', validators=[
+    password = PasswordField('Password:', validators=[
         DataRequired(message="Please enter a password.")])
 
     submit = SubmitField('Submit')
@@ -58,10 +58,10 @@ class NewEventForm(FlaskForm):
     class Meta:
         csrf = False
 
-    name = StringField('Event Name', validators=[DataRequired("Please enter a name for the event."), Length(1, 500)])
-    desc = StringField('Description', validators=[DataRequired("Please enter a description for the event."),
+    name = StringField('Event Name: ', validators=[DataRequired("Please enter a name for the event."), Length(1, 500)])
+    desc = StringField('Description: ', validators=[DataRequired("Please enter a description for the event."),
                                                   Length(1, 500)])
-    date = DateField('Date (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
+    date = DateField('Date: (Enter in the format of YYYY-MM-DD)', format='%Y-%m-%d',
                      validators=[DataRequired("Please enter a valid date.")])
 
     submit = SubmitField('Submit')
