@@ -11,6 +11,7 @@
 	<meta charset="utf-8">
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='Create_Event.css') }}">
 </head>
 
 <body>
@@ -52,7 +53,7 @@
 		{% endwith %}
 
 	<div class="formwrapper">
-            <h2 class="title">Create Event</h2>
+            <h1 class="title">Create Event</h1>
             <form method="POST" enctype=multipart/form-data>
                 <div class="form-field">{{ form.name.label }} {{ form.name }}
                     {% if form.name.errors %}
