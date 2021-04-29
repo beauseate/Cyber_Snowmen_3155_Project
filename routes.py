@@ -68,7 +68,8 @@ def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
-        hasLiked = db.session.query(Likes).filter_by(event_id=eventExists.event_id).first()
+        hasFavorited = db.session.query(Event, Likes).filter(eventExists.event_id == Likes.event_id
+                                                      ).filter(session['user_id'] == Likes.user_id).first()
         # Check to see if the user has already rated this event
         hasRated = db.session.query(Event, Rating).filter(eventExists.event_id == Rating.event_id
                                                       ).filter(session['user_id'] == Rating.user_id).first()
@@ -78,13 +79,13 @@ def get_event(e_id):
         comment_form = CommentForm()
         # Increase the favortie count of an event if the favorite button is clicked
         if request.method == 'POST' and ('favorite' in request.form):
-            if hasLiked:
+            if hasFavorited:
                 flash("You cannot favorite an event more than once!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             else:
                 eventExists.likes += 1
-                eventLiked = Likes(eventExists.event_id, session['user_id'])
-                db.session.add(eventLiked)
+                eventFavorited = Likes(eventExists.event_id, session['user_id'])
+                db.session.add(eventFavorited)
                 db.session.commit()
                 flash("You favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -104,9 +105,13 @@ def get_event(e_id):
         if request.method == 'POST' and ('unfavorite' in request.form):
             eventExists.likes -= 1
             # Check if the user has already liked this event and if so, delete it from events they like
-            if hasLiked:
-                db.session.delete(hasLiked)
+            if hasFavorited:
+                deleteFavorited = db.session.query(Likes).filter(Likes.event_id == eventExists.event_id).filter(Likes.user_id == session['user_id']).first()
+                db.session.delete(deleteFavorited)
                 db.session.commit()
+            else:
+                flash("You haven't favortied this event!")
+                return redirect(url_for('get_event', e_id=eventExists.event_id))
             flash("You unfavorited this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('rsvp' in request.form):
