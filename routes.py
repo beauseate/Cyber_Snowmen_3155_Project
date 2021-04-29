@@ -41,11 +41,9 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    get_flashed_messages()
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
-        # events = Event.query.filter(Event.name.ilike(f'%{searchEvent}%'))
         events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
                                     Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
         if session.get('user'):
@@ -55,7 +53,6 @@ def index():
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
-        flash("Event has been reported too many times! It is now removed.")
         return render_template('Home.html', events=listEvents, user=session['user'])
     else:
         listEvents = db.session.query(Event).all()
