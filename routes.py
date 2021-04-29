@@ -9,7 +9,7 @@ from sqlalchemy import or_, func
 from flask import get_flashed_messages
 
 from database import db
-from models import User as User, Likes, RSVP, Comments, Rating, Reports
+from models import User as User, Favorites, RSVP, Comments, Rating, Reports
 from models import Event as Event
 from random import randint
 from flask import session
@@ -68,8 +68,8 @@ def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
-        hasFavorited = db.session.query(Event, Likes).filter(eventExists.event_id == Likes.event_id
-                                                      ).filter(session['user_id'] == Likes.user_id).first()
+        hasFavorited = db.session.query(Event, Favorites).filter(eventExists.event_id == Favorites.event_id
+                                                                 ).filter(session['user_id'] == Favorites.user_id).first()
         #check for reported status
         hasReported = db.session.query(Event, Reports).filter(eventExists.event_id == Reports.event_id
                                                       ).filter(session['user_id'] == Reports.user_id).first()
@@ -86,8 +86,8 @@ def get_event(e_id):
                 flash("You cannot favorite an event more than once!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             else:
-                eventExists.likes += 1
-                eventFavorited = Likes(eventExists.event_id, session['user_id'])
+                eventExists.favorites += 1
+                eventFavorited = Favorites(eventExists.event_id, session['user_id'])
                 db.session.add(eventFavorited)
                 db.session.commit()
                 flash("You favorited this event!")
@@ -100,7 +100,6 @@ def get_event(e_id):
                 eventExists.reports += 1
                 reported = Reports(eventExists.event_id, session['user_id'])
                 db.session.add(reported)
-                db.session.commit
                 if eventExists.reports > 3:
                     eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
                     db.session.delete(eventExists)
@@ -113,14 +112,14 @@ def get_event(e_id):
                     return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('unfavorite' in request.form):
-            eventExists.likes -= 1
+            eventExists.favorites -= 1
             # Check if the user has already liked this event and if so, delete it from events they like
             if hasFavorited:
-                deleteFavorited = db.session.query(Likes).filter(Likes.event_id == eventExists.event_id).filter(Likes.user_id == session['user_id']).first()
+                deleteFavorited = db.session.query(Favorites).filter(Favorites.event_id == eventExists.event_id).filter(Favorites.user_id == session['user_id']).first()
                 db.session.delete(deleteFavorited)
                 db.session.commit()
             else:
-                flash("You haven't favortied this event!")
+                flash("You haven't favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             flash("You unfavorited this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -225,7 +224,7 @@ def favorite_events():
     if session.get('user'):
         id = session.get('user_id')
         # Run a query to get all events that a user likes
-        fav_events = db.session.query(Likes).filter_by(user_id=id).all()
+        fav_events = db.session.query(Favorites).filter_by(user_id=id).all()
         events = []
         # Iterate over all events that the user likes and add to a list
         for i in fav_events:
