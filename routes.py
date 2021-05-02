@@ -7,6 +7,7 @@ from flask import request
 from flask import redirect, url_for
 from sqlalchemy import or_, func
 from flask import get_flashed_messages
+from sqlalchemy import desc
 
 from database import db
 from models import User as User, Favorites, RSVP, Comments, Rating, Reports
@@ -41,6 +42,30 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    #Uses the POST from the HTML button in order to pick one of these. Available to those who aren't logged in.
+    #A bit ugly on the HTML side. I'll need to pretty that up.
+    if request.method == 'POST' and ('sortNameASC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.name).all() 
+        return render_template('Home.html', events=listEvents)
+
+    if request.method == 'POST' and ('sortNameDESC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.name.desc()).all() 
+        return render_template('Home.html', events=listEvents)
+
+
+
+    if request.method == 'POST' and ('sortDateASC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.date).all() 
+        return render_template('Home.html', events=listEvents)
+
+    if request.method == 'POST' and ('sortDateDESC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.date.desc()).all() 
+        return render_template('Home.html', events=listEvents)
+
+
+        
+
+
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
@@ -50,10 +75,12 @@ def index():
             return render_template('Home.html', events=events, user=session['user'])
         else:
             return render_template('Home.html', events=events)
+
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
         return render_template('Home.html', events=listEvents, user=session['user'])
+
     else:
         listEvents = db.session.query(Event).all()
         return render_template('Home.html', events=listEvents)
@@ -80,7 +107,7 @@ def get_event(e_id):
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
-        # Increase the favortie count of an event if the favorite button is clicked
+        # Increase the favorite count of an event if the favorite button is clicked
         if request.method == 'POST' and ('favorite' in request.form):
             if hasFavorited:
                 flash("You cannot favorite an event more than once!")
