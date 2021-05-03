@@ -10,6 +10,9 @@ h2 {
 	text-align: center;
 }
 
+h5 {
+	text-align: center;
+}
 /*Notification Section CSS*/
 aside {
 	width: 20%;
@@ -22,7 +25,15 @@ aside {
   	float: right;
   	border: solid;
   	border-radius: 8px;
-
+}
+div#notif {
+	width: 100%;
+	height: auto;
+  	padding-left: 15px;
+ 	margin-left: 15px;
+ 	margin-bottom: 15px;
+ 	position: relative;
+  	float: right;
 }
 
 div#notif p {
@@ -33,6 +44,29 @@ div#notif p {
 hr {
 	width: 50%;
 }
+
+table#notifTable {
+	width: 100%;
+	border-spacing: 10px;
+	border: none
+}
+table#notifTable  a {
+	text-decoration: none;
+	color: black;
+	font-size: 20px
+}
+
+table#notifTable td {
+	height: 100%;
+	width: 100%;
+	
+}
+
+div#notifTableCell {
+	height:100%; 
+	width:100%
+}
+
 
 /*CSS for table alignment*/
 /*table {

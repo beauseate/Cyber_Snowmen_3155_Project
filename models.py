@@ -96,3 +96,26 @@ class Rating(db.Model):
         self.event_id = event_id
         self.user_id = user_id
         self.ratingNum = ratingNum
+class Notifications(db.Model):
+    notification_id = db.Column("Notification_ID", db.Integer, primary_key=True)
+    #user_id that will receive notification
+    user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"), nullable=False)
+    #user_id_performer is the user_id that performed the action
+    user_id_performed = db.Column(db.Integer, db.ForeignKey("user.User_ID"), nullable=False)
+    #event_id linked to the action
+    event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
+    #action performed (RSVP, Like, Rate)
+    notification_action = db.Column("Notification Action", db.String)
+    #Name of user who performed action
+    user_name_performed_first = db.Column("Performed First Name", db.String)
+    user_name_performed_last = db.Column("Performed Last Name", db.String)
+    #Name of event that action was performed on
+    event_name = db.Column("Event Name", db.String)
+    def __init__(self, user_id, user_id_performed, event_id, notificationAction, user_name_performed_first, user_name_performed_last, event_name):
+        self.user_id = user_id
+        self.user_id_performed = user_id_performed
+        self.event_id = event_id
+        self.notification_action = notificationAction
+        self.user_name_performed_first = user_name_performed_first
+        self.user_name_performed_last = user_name_performed_last
+        self.event_name = event_name
