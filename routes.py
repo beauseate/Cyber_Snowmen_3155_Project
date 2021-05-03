@@ -145,7 +145,7 @@ def get_event(e_id):
                 eventExists.reports += 1
                 reported = Reports(eventExists.event_id, session['user_id'])
                 db.session.add(reported)
-                if eventExists.reports > 3:
+                if eventExists.reports >= 3:
                     eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
                     db.session.delete(eventExists)
                     db.session.commit()
@@ -165,7 +165,7 @@ def get_event(e_id):
                 #Adding unfavourite to notifications db
                 currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
                 userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
-                notificationComment = Notifications(currentEvent.user_id, session['user_id'], e_id, "unfavourited", userName.first_name, userName.last_name, currentEvent.name)
+                notificationComment = Notifications(currentEvent.user_id, session['user_id'], e_id, "unfavorited", userName.first_name, userName.last_name, currentEvent.name)
                 db.session.add(notificationComment)
 
                 db.session.commit()
