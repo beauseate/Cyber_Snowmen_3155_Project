@@ -11,31 +11,26 @@
 	<meta charset="utf-8">
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='Create_Event.css') }}">
 </head>
 
 <body>
 	<div class="wrapper">
-		<header><!-- Header contents -->
-			<div class="topnav">
-				<a href="#" class="page-title">Homepage</a>
-				<!-- Header navigation -->
-				<nav class="nav-ul">
-					<ul class="nav-ul-center">
-						<li><a href="{{url_for('index') }}">Home</a></li>
-						<li><a href="{{url_for('my_events') }}">My Events</a></li>
-						<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
-						<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
-						{% if user%}
-						<li>
-							<a href = "{{url_for('logout') }}">Logout</a>
-						</li>
-						{%else%}
-						<li><a href = "{{url_for('login') }}">Sign in</a></li>
-						<li><a href = "{{url_for('register') }}">Register</a></li>
-						{% endif%}
-	
-					</ul>			
-				</nav>
+		<header>
+			<!-- Header contents -->
+			<a href="#" class="page-title">Create Events</a>
+			<!-- Header navigation -->
+			<div class="nav-right">
+				<a href="{{url_for('index') }}">Home</a>
+				<a href="{{url_for('my_events') }}">My Events</a>
+				<a href="{{url_for('favorite_events') }}">Favorites</a>
+				<a href="{{url_for('new_event') }}" >Create Event</a>
+				{% if user%}
+					<a href = "{{url_for('logout') }}">Logout</a>
+				{%else%}
+					<a href = "{{url_for('login') }}">Sign in</a>
+					<a href = "{{url_for('register') }}">Register</a>
+				{% endif%}	
 			</div>
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
@@ -52,9 +47,9 @@
 		{% endwith %}
 
 	<div class="formwrapper">
-            <h2 class="title">Create Event</h2>
+            <h1 class="title">Create Event</h1>
             <form method="POST" enctype=multipart/form-data>
-                <div class="form-field">{{ form.name.label }} {{ form.name }}
+                <div class="form-field">{{ form.name.label }}<br>{{ form.name }}
                     {% if form.name.errors %}
                     <ul class="errors">
                         {% for error in form.name.errors %}
@@ -63,7 +58,7 @@
                     </ul>
                     {% endif %}
                 </div>
-                <div class="form-field">{{ form.desc.label }} {{ form.desc }}
+                <div class="form-field">{{ form.desc.label }}<br>{{ form.desc }}
                     {% if form.desc.errors %}
                     <ul class="errors">
                         {% for error in form.desc.errors %}
@@ -72,7 +67,7 @@
                     </ul>
                     {% endif %}
                 </div>
-                <div class="form-field">{{ form.date.label }} {{ form.date }}
+                <div class="form-field">{{ form.date.label }}<br>{{ form.date }}
                     {% if form.date.errors %}
                     <ul class="errors">
                         {% for error in form.date.errors %}
@@ -84,7 +79,7 @@
 				
 					<input type=file name=file>
 
-				
+				<br>
                 {{ form.submit }}
             </form>
 	</div>

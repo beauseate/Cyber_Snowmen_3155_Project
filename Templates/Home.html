@@ -13,36 +13,67 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
-
 </head>
 
 <body>
 	<div class="wrapper">
-		<header><!-- Header contents -->
-			<div class="topnav">
-				<a href="#" class="page-title">Homepage</a>
-				<!-- Header navigation -->
-				<nav class="nav-ul">
-					<ul class="nav-ul-center">
-						<li><a href="{{url_for('index') }}">Home</a></li>
-						<li><a href="{{url_for('my_events') }}">My Events</a></li>
-						<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
-						<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
-						{% if user%}
-						<li>
-							<a href = "{{url_for('logout') }}">Logout</a>
-						</li>
-						{%else%}
-						<li><a href = "{{url_for('login') }}">Sign in</a></li>
-						<li><a href = "{{url_for('register') }}">Register</a></li>
-						{% endif%}
-	
-					</ul>			
-				</nav>
+		<header>
+			
+			<!-- Header contents -->
+			<a href="#" class="page-title">Home Page</a>
+			<!-- Header navigation -->
+			<div class="nav-right">
+				<a href="{{url_for('index') }}">Home</a>
+				<a href="{{url_for('my_events') }}">My Events</a>
+				<a href="{{url_for('favorite_events') }}">Favorites</a>
+				<a href="{{url_for('new_event') }}" >Create Event</a>
+				{% if user%}
+					<a href = "{{url_for('logout') }}">Logout</a>
+				{%else%}
+					<a href = "{{url_for('login') }}">Sign in</a>
+					<a href = "{{url_for('register') }}">Register</a>
+				{% endif%}	
 			</div>
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+		<aside>
+			<div id="notif">
+				<h1>Notifications</h1>
+				<h5>(Click notification to dismiss)</h5>
+				<hr>
+				{% if user %}
+				<!--Sets notifications-->
+					{% if notification %}
+					<table id="notifTable">
+						{% for notifications in notification %}
+						<tr><td>
+						<!--Makes table cells clickable, which 'dismisses' the notification, deleting it from the database-->
+						<a href="{{ url_for('deleteNotification', notification_id=notifications.notification_id) }}">
+							<div id="notifTableCell">
+							{{notifications.user_name_performed_first}} {{notifications.user_name_performed_last}} has {{notifications.notification_action}} {{notifications.event_name}}
+							</div>
+						</a>
+						</td></tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+				{% else %}
+					<p>Please login to view notifications!</p>
+				{% endif %}
+			</div>
+		</aside>
+
 		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>
 
         <h2>Use this site to create and RSVP to nearby events.</h2>
@@ -56,7 +87,18 @@
 		<h1>
 			List of Events
 		</h1>
-		<table>
+
+		<form method = "post" style="text-align:center">
+			
+			<input type="submit" name="sortNameASC" value="Sort By Event Name (A-Z)" /> || 
+			<input type="submit" name="sortNameDESC" value="Sort By Event Name (Z-A)" /> ||
+		</form>
+
+		<form method = "post" style="text-align:center">
+			<input type="submit" name="sortDateASC" value="Sort By Date (Upcoming)" />||
+			<input type="submit" name="sortDateDESC" value="Sort By Date (Far off)" />
+		</form>
+		<!-- <table>
 			<tr>
 				<th>Event Picture</th>
 				<th>Event Name</th>
@@ -64,6 +106,7 @@
 				<th>Event Description</th>
 				<th>Created By</th>
 				<th>Event Rating</th>
+				<th>Event Favorties</th>
 			</tr>
 			{% for event in events %}
 			<tr>
@@ -73,9 +116,24 @@
 				<td>{{event.desc}}</td>
 				<td>{{event.user}}</td>
 				<td>{{event.rating}}</td>
+				<td>{{event.likes}}</td>
 			</tr>
 			{% endfor %}
-		</table>
+		</table> -->
+		{% for event in events %}
+		<div class="Events">
+			<div class="events-left">
+				<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
+			</div>
+			<div class="events-right">
+				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
+				<p id="event-date">{{event.date}}</p>
+				<p id="event-desc">{{event.desc}}</p>
+				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
+				<p id="event-rating">Rating: {{event.rating}}</p>
+			</div>	
+		</div>
+		{% endfor %}
 	</main>
 
 	<footer>

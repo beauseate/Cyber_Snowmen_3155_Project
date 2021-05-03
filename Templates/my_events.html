@@ -16,27 +16,21 @@
 
 <body>
 	<div class="wrapper">
-		<header><!-- Header contents -->
-			<div class="topnav">
-				<a href="#" class="page-title">Homepage</a>
-				<!-- Header navigation -->
-				<nav class="nav-ul">
-					<ul class="nav-ul-center">
-						<li><a href="{{url_for('index') }}">Home</a></li>
-						<li><a href="{{url_for('my_events') }}">My Events</a></li>
-						<li><a href="{{url_for('favorite_events') }}">Favorites</a></li>
-						<li><a href="{{url_for('new_event') }}" >Create Event</a></li>
-						{% if user%}
-						<li>
-							<a href = "{{url_for('logout') }}">Logout</a>
-						</li>
-						{%else%}
-						<li><a href = "{{url_for('login') }}">Sign in</a></li>
-						<li><a href = "{{url_for('register') }}">Register</a></li>
-						{% endif%}
-	
-					</ul>			
-				</nav>
+		<header>
+			<!-- Header contents -->
+			<a href="#" class="page-title">My Events</a>
+			<!-- Header navigation -->
+			<div class="nav-right">
+				<a href="{{url_for('index') }}">Home</a>
+				<a href="{{url_for('my_events') }}">My Events</a>
+				<a href="{{url_for('favorite_events') }}">Favorites</a>
+				<a href="{{url_for('new_event') }}" >Create Event</a>
+				{% if user%}
+					<a href = "{{url_for('logout') }}">Logout</a>
+				{%else%}
+					<a href = "{{url_for('login') }}">Sign in</a>
+					<a href = "{{url_for('register') }}">Register</a>
+				{% endif%}	
 			</div>
 		</header>		<!-- END HEADER - COPY FRIENDLY!-->
 	
@@ -52,14 +46,14 @@
                     <th>Date</th>
                     <th>Created by</th>
                     <th>Rating</th>
-                    <th>Likes</th>
+                    <th>Favorites</th>
                 </tr>
                 <tr>
                     <td>{{ event.desc }}</td>
                     <td>{{ event.date }}</td>
                     <td>{{ event.user }}</td>
                     <td>{{ event.rating }}</td>
-                    <td>{{ event.likes }}</td>
+                    <td>{{ event.favorites }}</td>
 					<td>
 						<form action = "{{ url_for('delete_event', event_id = event.event_id) }}" method = "post">
 							<input type = "submit" value = "Delete">

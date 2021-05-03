@@ -2,11 +2,12 @@ main {
 	padding-bottom: 50px;
 }
 
-h1, h2 {
+h1 {
 	text-align: center;
 	margin-bottom: 0;
 }
 
+/*form CSS*/
 form {
 	border: solid 5px;
 	padding: 20px 20px 20px 20px;
@@ -26,13 +27,18 @@ label {
 	padding-bottom: 20px;
 }
 
-input[type=text], input[type=password] {
+input[type=text] {
 	width: 96%;
 	height: 25px;
 	font-size: 14px;
 }
 
+input#file-upload-button {
+	padding: 10px 10px;
+}
+
 input#submit {
+	margin-top: 20px;
 	width: 98%;
 	height: 50px;
 	font-size: 26px;
