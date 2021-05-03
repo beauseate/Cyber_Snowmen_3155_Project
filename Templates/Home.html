@@ -111,7 +111,7 @@
 				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
 				<p id="event-date">{{event.date}}</p>
 				<p id="event-desc">{{event.desc}}</p>
-				<p id="event-user">Event Created By: {{event.user}}</p>
+				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
 				<p id="event-rating">Rating: {{event.rating}}</p>
 			</div>	
 		</div>
