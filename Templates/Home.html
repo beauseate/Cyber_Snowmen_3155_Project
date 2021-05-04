@@ -13,7 +13,6 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
-
 </head>
 
 <body>
@@ -51,8 +50,27 @@
 		<aside>
 			<div id="notif">
 				<h1>Notifications</h1>
+				<h5>(Click notification to dismiss)</h5>
 				<hr>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dui erat, ornare sit amet bibendum ac, ultricies ut augue. Integer vitae nisi vulputate, ultricies mauris sed, aliquam odio. In efficitur pretium libero, vel auctor dui scelerisque in. Sed enim augue, maximus eget erat tempor, dictum accumsan risus. Proin consequat sem a ligula finibus, eu fringilla dolor fringilla. Donec arcu neque, convallis ac augue ut, tristique venenatis mauris. Aliquam erat volutpat.</p>
+				{% if user %}
+				<!--Sets notifications-->
+					{% if notification %}
+					<table id="notifTable">
+						{% for notifications in notification %}
+						<tr><td>
+						<!--Makes table cells clickable, which 'dismisses' the notification, deleting it from the database-->
+						<a href="{{ url_for('deleteNotification', notification_id=notifications.notification_id) }}">
+							<div id="notifTableCell">
+							{{notifications.user_name_performed_first}} {{notifications.user_name_performed_last}} has {{notifications.notification_action}} {{notifications.event_name}}
+							</div>
+						</a>
+						</td></tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+				{% else %}
+					<p>Please login to view notifications!</p>
+				{% endif %}
 			</div>
 		</aside>
 
@@ -69,6 +87,17 @@
 		<h1>
 			List of Events
 		</h1>
+
+		<form method = "post" style="text-align:center">
+			
+			<input type="submit" name="sortNameASC" value="Sort By Event Name (A-Z)" /> || 
+			<input type="submit" name="sortNameDESC" value="Sort By Event Name (Z-A)" /> ||
+		</form>
+
+		<form method = "post" style="text-align:center">
+			<input type="submit" name="sortDateASC" value="Sort By Date (Upcoming)" />||
+			<input type="submit" name="sortDateDESC" value="Sort By Date (Far off)" />
+		</form>
 		<!-- <table>
 			<tr>
 				<th>Event Picture</th>
@@ -100,7 +129,7 @@
 				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
 				<p id="event-date">{{event.date}}</p>
 				<p id="event-desc">{{event.desc}}</p>
-				<p id="event-user">Event Created By: {{event.user}}</p>
+				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
 				<p id="event-rating">Rating: {{event.rating}}</p>
 			</div>	
 		</div>

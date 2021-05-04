@@ -13,7 +13,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
-	<script src="{{ url_for('static', filename='EventInfo.js') }}"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 
@@ -65,7 +64,7 @@
                 <td>{{ event.date }}</td>
                 <td>{{ event.user}}</td>
                 <td>{{ event.rating}}</td>
-				<td>{{ event.likes}}</td>
+				<td>{{ event.favorites}}</td>
             </tr>
         </table>
 
@@ -87,32 +86,30 @@
   		  <input type="submit" name="unfavorite" value="Unfavorite" /> ||
 		  <input type="submit" name ="rsvp" value="RSVP" /> ||
 		  <input type="submit" name ="un-rsvp" value="Un-RSVP" /> ||
-		  <input type="submit" name ="report" value="report" />
+		  <input type="submit" name ="report" value="Report" />
  
       </form>
 	  <br><br>
 	<form class="rating" method="POST" id="rating" name ="rate">
 		
-		<input type="radio" id="rating1" name="rating" value="1">
-		<label id="1" title="Poor" class="fa fa-star" for="rating1"></label>
-		
-		<input type="radio" id="rating2" name="rating" value="2">
-		<label id="2" title="Average" class="fa fa-star" for="rating2"></label>
-		
-		
-		<input type="radio" id="rating3" name="rating" value="3">
-		<label id="3" title="Average" class="fa fa-star" for="rating3"></label>
-			
-		
-		<input type="radio" id="rating4" name="rating" value="4">
-		<label id="4" title="Good" class="fa fa-star" for="rating4"></label>
-		
-		
+		<button type="submit" form="rating" value="Submit">Rate Event</button>
+
 		<input type="radio" id="rating5" name="rating" value="5">
 		<label id="5" title="Awesome" class="fa fa-star" for="rating5"></label>
-		<button type="submit" form="rating" value="Submit">Rate Event</button>
+
+		<input type="radio" id="rating4" name="rating" value="4">
+		<label id="4" title="Good" class="fa fa-star" for="rating4"></label>
+
+		<input type="radio" id="rating3" name="rating" value="3">
+		<label id="3" title="Average" class="fa fa-star" for="rating3"></label>
+
+		<input type="radio" id="rating2" name="rating" value="2">
+		<label id="2" title="Below Average" class="fa fa-star" for="rating2"></label>
+
+		<input type="radio" id="rating1" name="rating" value="1">
+		<label id="1" title="Poor" class="fa fa-star" for="rating1"></label>
 	</form> 
-		<br>
+		<br><br><br>
 
 		{% if form %}
    <form method="post">

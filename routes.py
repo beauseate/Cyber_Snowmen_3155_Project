@@ -7,10 +7,12 @@ from flask import request
 from flask import redirect, url_for
 from sqlalchemy import or_, func
 from flask import get_flashed_messages
+from sqlalchemy import desc
 
 from database import db
-from models import User as User, Likes, RSVP, Comments, Rating
+from models import User as User, Favorites, RSVP, Comments, Rating, Reports
 from models import Event as Event
+from models import Notifications as Notifications
 from random import randint
 from flask import session
 from forms import RegisterForm, LoginForm, NewEventForm, CommentForm
@@ -41,19 +43,57 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    #Uses the POST from the HTML button in order to pick one of these. Available to those who aren't logged in.
+    #A bit ugly on the HTML side. I'll need to pretty that up.
+    #Added notifications and user to each of the sorts
+    if request.method == 'POST' and ('sortNameASC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.name).all() 
+        if session.get('user'):
+            notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        return render_template('Home.html', events=listEvents)
+
+    if request.method == 'POST' and ('sortNameDESC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.name.desc()).all() 
+        if session.get('user'):
+            notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        return render_template('Home.html', events=listEvents)
+
+
+
+    if request.method == 'POST' and ('sortDateASC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.date).all() 
+        if session.get('user'):
+            notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        return render_template('Home.html', events=listEvents)
+
+    if request.method == 'POST' and ('sortDateDESC' in request.form):
+        listEvents = db.session.query(Event).order_by(Event.date.desc()).all() 
+        if session.get('user'):
+            notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        return render_template('Home.html', events=listEvents)
+
+
     if request.method == 'POST':
         searchEvent = request.form['event']
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
         events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
                                     Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
         if session.get('user'):
-            return render_template('Home.html', events=events, user=session['user'])
+            notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+            return render_template('Home.html', events=events, user=session['user'], notification=notficationList)
         else:
             return render_template('Home.html', events=events)
+
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
-        return render_template('Home.html', events=listEvents, user=session['user'])
+        notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
+        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+
     else:
         listEvents = db.session.query(Event).all()
         return render_template('Home.html', events=listEvents)
@@ -68,8 +108,11 @@ def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
-        hasFavorited = db.session.query(Event, Likes).filter(eventExists.event_id == Likes.event_id
-                                                      ).filter(session['user_id'] == Likes.user_id).first()
+        hasFavorited = db.session.query(Event, Favorites).filter(eventExists.event_id == Favorites.event_id
+                                                                 ).filter(session['user_id'] == Favorites.user_id).first()
+        #check for reported status
+        hasReported = db.session.query(Event, Reports).filter(eventExists.event_id == Reports.event_id
+                                                      ).filter(session['user_id'] == Reports.user_id).first()
         # Check to see if the user has already rated this event
         hasRated = db.session.query(Event, Rating).filter(eventExists.event_id == Rating.event_id
                                                       ).filter(session['user_id'] == Rating.user_id).first()
@@ -77,40 +120,57 @@ def get_event(e_id):
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
                                                       and session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
-        # Increase the favortie count of an event if the favorite button is clicked
+        # Increase the favorite count of an event if the favorite button is clicked
         if request.method == 'POST' and ('favorite' in request.form):
             if hasFavorited:
                 flash("You cannot favorite an event more than once!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             else:
-                eventExists.likes += 1
-                eventFavorited = Likes(eventExists.event_id, session['user_id'])
+                eventExists.favorites += 1
+                eventFavorited = Favorites(eventExists.event_id, session['user_id'])
                 db.session.add(eventFavorited)
+                #Adding favourite to notifications db
+                currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                notificationFavourite = Notifications(currentEvent.user_id, session['user_id'], e_id, "Favorited", userName.first_name, userName.last_name, currentEvent.name)
+                db.session.add(notificationFavourite)
                 db.session.commit()
                 flash("You favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
         if request.method == 'POST' and ('report' in request.form):
-            eventExists.reports += 1
-            if eventExists.reports > 9:
-                eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
-                db.session.delete(eventExists)
-                db.session.commit()
-                flash("Event has been reported too many times! It is now removed.")
-                return redirect(url_for('index'))
-            else:  
-                db.session.commit()
-                flash("Event Reported!")
+            if hasReported:
+                flash("The event has already been reported!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
+            else:
+                eventExists.reports += 1
+                reported = Reports(eventExists.event_id, session['user_id'])
+                db.session.add(reported)
+                if eventExists.reports >= 3:
+                    eventExists = db.session.query(Event).filter_by(event_id=eventExists.event_id).one()
+                    db.session.delete(eventExists)
+                    db.session.commit()
+                    flash("Event has been reported too many times! It is now removed.")
+                    return redirect(url_for('index'))
+                else:  
+                    db.session.commit()
+                    flash("Event Reported!")
+                    return redirect(url_for('get_event', e_id=eventExists.event_id))
         # Decrease the likes if the upvote button is clicked
         if request.method == 'POST' and ('unfavorite' in request.form):
-            eventExists.likes -= 1
+            eventExists.favorites -= 1
             # Check if the user has already liked this event and if so, delete it from events they like
             if hasFavorited:
-                deleteFavorited = db.session.query(Likes).filter(Likes.event_id == eventExists.event_id).filter(Likes.user_id == session['user_id']).first()
+                deleteFavorited = db.session.query(Favorites).filter(Favorites.event_id == eventExists.event_id).filter(Favorites.user_id == session['user_id']).first()
                 db.session.delete(deleteFavorited)
+                #Adding unfavourite to notifications db
+                currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                notificationComment = Notifications(currentEvent.user_id, session['user_id'], e_id, "unfavorited", userName.first_name, userName.last_name, currentEvent.name)
+                db.session.add(notificationComment)
+
                 db.session.commit()
             else:
-                flash("You haven't favortied this event!")
+                flash("You haven't favorited this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             flash("You unfavorited this event!")
             return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -123,6 +183,11 @@ def get_event(e_id):
             else:
                 attending = RSVP(eventExists.event_id, session['user_id'])
                 db.session.add(attending)
+                #Adding rsvp to notifications db
+                currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                notificationRSVP = Notifications(currentEvent.user_id, session['user_id'], e_id, "RSVPed to", userName.first_name, userName.last_name, currentEvent.name)
+                db.session.add(notificationRSVP)
                 db.session.commit()
                 flash("Congratulations! You have successfully RSVP'd to this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -130,6 +195,11 @@ def get_event(e_id):
             if isRSVP:
                 # Need to access the RSVP relational table since isRSVP is a Query object and delete it
                 db.session.delete(isRSVP.RSVP)
+                #Adding Un-RSVP to notifications db
+                currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                notificationComment = Notifications(currentEvent.user_id, session['user_id'], e_id, "Un-RSVPed", userName.first_name, userName.last_name, currentEvent.name)
+                db.session.add(notificationComment)
                 db.session.commit()
                 # Send a message to the user
                 flash("You have successfully un-RSVP'd from this event!")
@@ -165,6 +235,11 @@ def get_event(e_id):
                 join(Event).\
                 filter(Event.event_id == eventExists.event_id)
                 eventExists.rating = ratingAvg
+                #Adding rating to notifications db
+                currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                notificationRating = Notifications(currentEvent.user_id, session['user_id'], e_id, "given a rating to", userName.first_name, userName.last_name, currentEvent.name)
+                db.session.add(notificationRating)
                 db.session.commit()
                 flash("Congratulations! You have successfully rated this event!")
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
@@ -173,6 +248,11 @@ def get_event(e_id):
             comment_text = request.form['comment']
             new_record = Comments(eventExists.event_id, comment_text, session['user'])
             db.session.add(new_record)
+        #Adding comments to notifications db
+            currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
+            userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+            notificationComment = Notifications(currentEvent.user_id, session['user_id'], e_id, "commented on", userName.first_name, userName.last_name, currentEvent.name)
+            db.session.add(notificationComment)
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
         return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form)
@@ -215,7 +295,7 @@ def favorite_events():
     if session.get('user'):
         id = session.get('user_id')
         # Run a query to get all events that a user likes
-        fav_events = db.session.query(Likes).filter_by(user_id=id).all()
+        fav_events = db.session.query(Favorites).filter_by(user_id=id).all()
         events = []
         # Iterate over all events that the user likes and add to a list
         for i in fav_events:
@@ -405,7 +485,17 @@ def login():
     else:
         # form did not validate or GET request
         return render_template("login.html", form=login_form)
+'''
 
+DESC: Handles the deletion of notifications when the table cell is clicked
+
+'''
+@app.route('/deleteNotification/<notification_id>', methods=['POST', 'GET'])
+def deleteNotification(notification_id):
+    delNotif = db.session.query(Notifications).filter(Notifications.notification_id == notification_id).first()
+    db.session.delete(delNotif)
+    db.session.commit()
+    return redirect(url_for('index'))
 '''
 
 DESC: Function to randomly generate user IDs.
