@@ -11,14 +11,14 @@ Scenario: I need to RSVP for the cat event so I can pet ALL the cats.
     Given the event exists
     When I press RSVP
     Then I am registered for the event
-    And I can access it on the "My events" page
+    And I can view my name next to the event in the RSVP section
 
 
 Scenario: I need to un-RSVP to an event. I learned I have cat allergies and can no longer go.
     Given I RSVPed to the event
-    When click where RSVP was, it takes me off the event listing
+    When I click UN-RSVP it takes me off the event listing
     Then I am unresgistered for the event
-    And I won't be able to see it on the "My events" page
+    And I won't be able to see my name next to the event in the RSVP section
 
 Background: 
     Given I am logged into my account.
