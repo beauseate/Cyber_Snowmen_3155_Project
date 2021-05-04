@@ -36,9 +36,9 @@
 	
 
 	<main>
-		<h1>My Events</h1>
+		<h1>Created Events</h1>
         <br>
-        {% for event in events %}
+        {% for event in created_events %}
             <h2><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}} Details</a></h2>
             <table>
                 <tr>
@@ -62,6 +62,35 @@
 						<form action = "{{ url_for('edit_event', event_id = event.event_id) }}" method = "post">
 							<input type = "submit" value = "Edit">
 						</form>
+					</td>
+                </tr>
+            </table>
+            <br>
+        {% endfor %}
+
+		<h1>RSVP Events</h1>
+        <br>
+        {% for event in rsvp_events %}
+            <h2><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}} Details</a></h2>
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Created by</th>
+                    <th>Rating</th>
+                    <th>Favorites</th>
+                </tr>
+                <tr>
+                    <td>{{ event.desc }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.rating }}</td>
+                    <td>{{ event.favorites }}</td>
+					<td>
+						<form action = "{{ url_for('unRSVP', event_id = event.event_id) }}" method = "post">
+							<input type = "submit" value = "Un-RSVP">
+						</form>
+						<br>
 					</td>
                 </tr>
             </table>

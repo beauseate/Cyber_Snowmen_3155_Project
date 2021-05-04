@@ -279,8 +279,13 @@ DESC: View events that you have created.
 @app.route('/events/my_events', methods=['GET', 'POST'])
 def my_events():
     if session.get('user'):
-        my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
-        return render_template('my_events.html', events=my_events, user=session['user'])
+        #my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
+        created_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
+        rsvp_events = db.session.query(RSVP).filter_by(user_id=session['user_id']).all()
+        going_events = []
+        for i in rsvp_events:
+            going_events.append(db.session.query(Event).filter_by(event_id=i.event_id).one())
+        return render_template('my_events.html', created_events=created_events, rsvp_events=going_events, user=session['user'])
     else:
         return redirect(url_for('login'))
 '''
@@ -349,6 +354,17 @@ def new_event():
             return render_template('new_event.html', form=eventForm, user=session['user'])
     else:
         # Have the user login before creating an event
+        return redirect(url_for('login'))
+
+@app.route('/events/my_events/<event_id>', methods = ['GET', 'POST'])
+def unRSVP(event_id):
+    if session.get('user'):
+        event = db.session.query(RSVP).filter_by(event_id = event_id).one()
+        db.session.delete(event)
+        db.session.commit()
+
+        return redirect(url_for('my_events'))
+    else:
         return redirect(url_for('login'))
 
 '''
