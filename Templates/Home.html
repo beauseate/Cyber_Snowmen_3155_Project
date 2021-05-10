@@ -128,8 +128,10 @@
 				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
 				<p id="event-attending">Other people attending:
 					{% for user in usersAttending %}
+						{% if user.event_id == event.event_id %}
 						
 							<p>{{user.first_name}} {{user.last_name}}</p>
+						{% endif %}
 						
 					{% endfor %}
 				</p>

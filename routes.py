@@ -93,11 +93,7 @@ def index():
         listEvents = db.session.query(Event).all()
         listUsers = db.session.query(User).all()
         notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-       # usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
-        usersAttending = db.session.query(User).filter(RSVP.user_id == User.user_id).all()
-     #   usersAttending = db.session.query(RSVP).\
-      #          join(User).\
-       #         filter(RSVP.user_id == User.user_id)
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending, Users=listUsers)
 
     else:
@@ -187,11 +183,11 @@ def get_event(e_id):
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             # Otherwise add the user's RSVP to the database
             else:
-                attending = RSVP(eventExists.event_id, session['user_id'])
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                attending = RSVP(eventExists.event_id, session['user_id'], userName.first_name, userName.last_name)
                 db.session.add(attending)
                 #Adding rsvp to notifications db
                 currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
-                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
                 notificationRSVP = Notifications(currentEvent.user_id, session['user_id'], e_id, "RSVPed to", userName.first_name, userName.last_name, currentEvent.name)
                 db.session.add(notificationRSVP)
                 db.session.commit()
