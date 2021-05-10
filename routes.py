@@ -47,34 +47,38 @@ def index():
     #A bit ugly on the HTML side. I'll need to pretty that up.
     #Added notifications and user to each of the sorts
     if request.method == 'POST' and ('sortNameASC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.name).all() 
+        listEvents = db.session.query(Event).order_by(Event.name).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
     if request.method == 'POST' and ('sortNameDESC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.name.desc()).all() 
+        listEvents = db.session.query(Event).order_by(Event.name.desc()).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 
 
     if request.method == 'POST' and ('sortDateASC' in request.form):
         listEvents = db.session.query(Event).order_by(Event.date).all() 
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
     if request.method == 'POST' and ('sortDateDESC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.date.desc()).all() 
+        listEvents = db.session.query(Event).order_by(Event.date.desc()).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 
     if request.method == 'POST':
@@ -82,23 +86,24 @@ def index():
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
         events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
                                     Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=events, user=session['user'], notification=notficationList)
+            return render_template('Home.html', events=events, user=session['user'], notification=notficationList, usersAttending=usersAttending)
         else:
-            return render_template('Home.html', events=events)
+            return render_template('Home.html', events=events, usersAttending=usersAttending)
 
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
-        listUsers = db.session.query(User).all()
         notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
         usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
-        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending, Users=listUsers)
+        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
 
     else:
         listEvents = db.session.query(Event).all()
-        return render_template('Home.html', events=listEvents)
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 '''
 
