@@ -361,7 +361,7 @@ def new_event():
 @app.route('/events/my_events/<event_id>', methods = ['GET', 'POST'])
 def unRSVP(event_id):
     if session.get('user'):
-        event = db.session.query(RSVP).filter_by(event_id = event_id).one()
+        event = db.session.query(RSVP).filter(RSVP.event_id == event_id).filter(session['user_id'] == RSVP.user_id).one()
         db.session.delete(event)
         db.session.commit()
 
