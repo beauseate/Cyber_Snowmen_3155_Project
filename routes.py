@@ -93,10 +93,11 @@ def index():
         listEvents = db.session.query(Event).all()
         listUsers = db.session.query(User).all()
         notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-        #usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
-        usersAttending = db.session.query(RSVP).\
-                join(User).\
-                filter(RSVP.user_id == User.user_id)
+       # usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
+        usersAttending = db.session.query(User).filter(RSVP.user_id == User.user_id).all()
+     #   usersAttending = db.session.query(RSVP).\
+      #          join(User).\
+       #         filter(RSVP.user_id == User.user_id)
         return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending, Users=listUsers)
 
     else:
