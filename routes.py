@@ -47,34 +47,38 @@ def index():
     #A bit ugly on the HTML side. I'll need to pretty that up.
     #Added notifications and user to each of the sorts
     if request.method == 'POST' and ('sortNameASC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.name).all() 
+        listEvents = db.session.query(Event).order_by(Event.name).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
     if request.method == 'POST' and ('sortNameDESC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.name.desc()).all() 
+        listEvents = db.session.query(Event).order_by(Event.name.desc()).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 
 
     if request.method == 'POST' and ('sortDateASC' in request.form):
         listEvents = db.session.query(Event).order_by(Event.date).all() 
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
     if request.method == 'POST' and ('sortDateDESC' in request.form):
-        listEvents = db.session.query(Event).order_by(Event.date.desc()).all() 
+        listEvents = db.session.query(Event).order_by(Event.date.desc()).all()
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
-        return render_template('Home.html', events=listEvents)
+            return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 
     if request.method == 'POST':
@@ -82,21 +86,24 @@ def index():
         # Filters the Event table by Name attribute that is LIKE whatever the user searches
         events = Event.query.filter(or_(Event.name.ilike(f'%{searchEvent}%'), Event.desc.ilike(f'%{searchEvent}%'),
                                     Event.user.ilike(f'%{searchEvent}%'), Event.date.ilike(f'%{searchEvent}%')))
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
         if session.get('user'):
             notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-            return render_template('Home.html', events=events, user=session['user'], notification=notficationList)
+            return render_template('Home.html', events=events, user=session['user'], notification=notficationList, usersAttending=usersAttending)
         else:
-            return render_template('Home.html', events=events)
+            return render_template('Home.html', events=events, usersAttending=usersAttending)
 
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
         notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
+        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending)
 
     else:
         listEvents = db.session.query(Event).all()
-        return render_template('Home.html', events=listEvents)
+        usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
+        return render_template('Home.html', events=listEvents, usersAttending=usersAttending)
 
 '''
 
@@ -106,6 +113,7 @@ DESC: The route to each individual event filtered by it's event ID.
 @app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
+    usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
         hasFavorited = db.session.query(Event, Favorites).filter(eventExists.event_id == Favorites.event_id
@@ -118,7 +126,7 @@ def get_event(e_id):
                                                       ).filter(session['user_id'] == Rating.user_id).first()
         # Check to see if the user has already RSVP'd to this event
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
-                                                      and session['user_id'] == RSVP.user_id).first()
+                                                      ).filter(session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
         # Increase the favorite count of an event if the favorite button is clicked
         if request.method == 'POST' and ('favorite' in request.form):
@@ -181,11 +189,11 @@ def get_event(e_id):
                 return redirect(url_for('get_event', e_id=eventExists.event_id))
             # Otherwise add the user's RSVP to the database
             else:
-                attending = RSVP(eventExists.event_id, session['user_id'])
+                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
+                attending = RSVP(eventExists.event_id, session['user_id'], userName.first_name, userName.last_name)
                 db.session.add(attending)
                 #Adding rsvp to notifications db
                 currentEvent = db.session.query(Event).filter(Event.event_id == e_id).first()
-                userName = db.session.query(User).filter(User.user_id == session['user_id']).first()
                 notificationRSVP = Notifications(currentEvent.user_id, session['user_id'], e_id, "RSVPed to", userName.first_name, userName.last_name, currentEvent.name)
                 db.session.add(notificationRSVP)
                 db.session.commit()
@@ -255,7 +263,7 @@ def get_event(e_id):
             db.session.add(notificationComment)
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
-        return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form)
+        return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form, usersAttending=usersAttending)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
     # Redirect them to the list of all events instead
     elif session.get('user') and (not eventExists):
@@ -279,8 +287,13 @@ DESC: View events that you have created.
 @app.route('/events/my_events', methods=['GET', 'POST'])
 def my_events():
     if session.get('user'):
-        my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
-        return render_template('my_events.html', events=my_events, user=session['user'])
+        #my_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
+        created_events = db.session.query(Event).filter_by(user_id=session['user_id']).all()
+        rsvp_events = db.session.query(RSVP).filter_by(user_id=session['user_id']).all()
+        going_events = []
+        for i in rsvp_events:
+            going_events.append(db.session.query(Event).filter_by(event_id=i.event_id).one())
+        return render_template('my_events.html', created_events=created_events, rsvp_events=going_events, user=session['user'])
     else:
         return redirect(url_for('login'))
 '''
@@ -351,6 +364,18 @@ def new_event():
         # Have the user login before creating an event
         return redirect(url_for('login'))
 
+@app.route('/events/my_events/<event_id>', methods = ['GET', 'POST'])
+def unRSVP(event_id):
+    if session.get('user'):
+        event = db.session.query(RSVP).filter(RSVP.event_id == event_id).filter(session['user_id'] == RSVP.user_id).one()
+        db.session.delete(event)
+        db.session.commit()
+
+        flash("You have successfully un-RSVP'd from this event!")
+        return redirect(url_for('my_events'))
+    else:
+        return redirect(url_for('login'))
+
 '''
 
 TAB: DELETE
@@ -367,6 +392,7 @@ def delete_event(event_id):
         db.session.delete(my_event)
         db.session.commit()
 
+        flash("Event deleted!")
         return redirect (url_for('my_events'))
     else:
         #user is not in session redirect to login

@@ -71,3 +71,47 @@ dialog {
   border: 2px solid gray;
 
 }
+
+/*CSS for Events*/
+div.Events {
+	border: solid;
+	border-radius: 8px;
+	padding: 5px 5px 0 5px;
+	margin-left: 10%;
+	display: inline-block;
+	width: 60%;
+	margin-bottom: 10px;
+	font-size: 20px;
+  margin-top: 200px;
+}
+
+div.events-left {
+	float: left;
+	padding-left: 15px;
+}
+
+#event-title {
+	font-size: 24px;
+	text-align: center;
+}
+
+div.events-right {
+	float: left;
+	padding-left: 25px;
+	padding-right: 15px;
+	width: 25%;
+}
+
+/*CSS for img*/
+img.event_image {
+	display: block; 
+	margin: 0 auto; 
+	height: 200px;
+	width: 250px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.title {
+  margin-top: 25;
+}

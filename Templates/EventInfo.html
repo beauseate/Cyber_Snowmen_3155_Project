@@ -49,36 +49,26 @@
   			{% endif %}
 		{% endwith %}
 
-		<h1>{{event.name}} Details</h1>
-		<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
-        <table>
-            <tr>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Created by</th>
-                <th>Rating</th>
-				<th>Number of Favorites</th>
-            </tr>
-            <tr>
-                <td>{{ event.desc }}</td>
-                <td>{{ event.date }}</td>
-                <td>{{ event.user}}</td>
-                <td>{{ event.rating}}</td>
-				<td>{{ event.favorites}}</td>
-            </tr>
-        </table>
-
-		{% if event.comments %}
-  {% if event.comments|length > 0 %}
-   <h2>Comments</h2>
-   <ul>
-   {% for comment in event.comments %}
-	<h2>{{ comment.first_name }} Says:</h2>
-    <li>{{ comment.content }}</li>
-   {% endfor %}
-   </ul>
-  {% endif %}
-          {% endif %}
+		<div class="Events">
+			<div class="events-left">
+				<img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}">
+			</div>
+			<div class="events-right">
+				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
+				<p id="event-attending">Other people attending:
+					{% for user in usersAttending %}
+						{% if user.event_id == event.event_id %}
+						
+							<p>{{user.first_name}} {{user.last_name}}</p>
+						{% endif %}
+						
+					{% endfor %}
+				</p>
+				<p id="event-date">Date: {{event.date}}</p>
+				<p id="event-desc">Description: {{event.desc}}</p>
+				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
+				<p id="event-rating">Rating: {{event.rating}}</p>
+			</div>	
 
 
       <form method = "post">
@@ -110,18 +100,31 @@
 		<label id="1" title="Poor" class="fa fa-star" for="rating1"></label>
 	</form> 
 		<br><br><br>
-
-		{% if form %}
-   <form method="post">
-      <div class="formwrapper">
-      <h2 class="title">Add a comment</h2>
-      <div class="form-field">
-         {{ form.comment.label }} <br/> {{ form.comment }}
-      </div>
-         {{ form.submit }}
-      </div>
-   </form>
+{% if form %}
+	<form method="post">
+		<div class="formwrapper">
+		<div class="form-field">
+			<br><br>
+			<h3><strong>Add a comment</strong></h3>
+			{{ form.comment.label }} <br/> {{ form.comment }}
+		</div>
+			{{ form.submit }}
+		</div>
+	</form>
 {% endif %}
+{% if event.comments %}
+  {% if event.comments|length > 0 %}
+   <h2>Comments</h2>
+   <ul>
+   {% for comment in event.comments %}
+	<h2>{{ comment.first_name }} Says:</h2>
+    <li>{{ comment.content }}</li>
+   {% endfor %}
+   </ul>
+  {% endif %}
+          {% endif %}
+		</div>
+
 
 	</main>
 

@@ -50,6 +50,7 @@ class Reports(db.Model):
     report_id = db.Column("Report_ID", db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
+    
 
     def __init__(self, event_id, user_id):
         self.event_id = event_id
@@ -58,10 +59,15 @@ class RSVP(db.Model):
     RSVP_id = db.Column("RSVP_ID", db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey("event.Event_ID"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.User_ID"))
+    first_name = db.Column("first_name", db.String(75))
+    last_name = db.Column("Last_Name", db.String(75))
 
-    def __init__(self, event_id, user_id):
+
+    def __init__(self, event_id, user_id, first_name, last_name):
         self.event_id = event_id
         self.user_id = user_id
+        self.first_name = first_name
+        self.last_name = last_name
 
 
 class Favorites(db.Model):

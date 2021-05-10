@@ -11,7 +11,6 @@
 	<meta charset="utf-8">
 	<!-- External Stylesheet -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='header_footer.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='EventInfo.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
 </head>
 
@@ -74,7 +73,7 @@
 			</div>
 		</aside>
 
-		<h1>Welcome {% if user %}{{user}}{% endif %} to the 49er Events App!</h1>
+		<h1>Welcome {% if user %}{{user}}{% endif %} to Meetup 2!</h1>
 
         <h2>Use this site to create and RSVP to nearby events.</h2>
         <h1>
@@ -83,43 +82,18 @@
                 <input type = "submit" value = "Search" />
             </form>
         </h1>
+		<h1 class="list-events-h1">List of Events</h1>
 		<!-- Event listing, implementation currently same as flask activity-->
-		<h1>
-			List of Events
-		</h1>
-
-		<form method = "post" style="text-align:center">
-			
+		<form class="sort" method = "post" style="text-align:center">		
 			<input type="submit" name="sortNameASC" value="Sort By Event Name (A-Z)" /> || 
-			<input type="submit" name="sortNameDESC" value="Sort By Event Name (Z-A)" /> ||
+			<input type="submit" name="sortNameDESC" value="Sort By Event Name (Z-A)" /> 
 		</form>
 
-		<form method = "post" style="text-align:center">
-			<input type="submit" name="sortDateASC" value="Sort By Date (Upcoming)" />||
+		<form class="sort" method = "post" style="text-align:center">
+			<input type="submit" name="sortDateASC" value="Sort By Date (Upcoming)" /> ||
 			<input type="submit" name="sortDateDESC" value="Sort By Date (Far off)" />
 		</form>
-		<!-- <table>
-			<tr>
-				<th>Event Picture</th>
-				<th>Event Name</th>
-				<th>Event Date</th>
-				<th>Event Description</th>
-				<th>Created By</th>
-				<th>Event Rating</th>
-				<th>Event Favorties</th>
-			</tr>
-			{% for event in events %}
-			<tr>
-				<td><img class = "event_image" src="{{ url_for('static', filename='Images/' + event.filename) }}"></td>
-				<td><a href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a></td>
-				<td>{{event.date}}</td>
-				<td>{{event.desc}}</td>
-				<td>{{event.user}}</td>
-				<td>{{event.rating}}</td>
-				<td>{{event.likes}}</td>
-			</tr>
-			{% endfor %}
-		</table> -->
+
 		{% for event in events %}
 		<div class="Events">
 			<div class="events-left">
@@ -127,8 +101,17 @@
 			</div>
 			<div class="events-right">
 				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
-				<p id="event-date">{{event.date}}</p>
-				<p id="event-desc">{{event.desc}}</p>
+				<p id="event-attending">Other people attending:
+					{% for user in usersAttending %}
+						{% if user.event_id == event.event_id %}
+						
+							<p>{{user.first_name}} {{user.last_name}}</p>
+						{% endif %}
+						
+					{% endfor %}
+				</p>
+				<p id="event-date">Date: {{event.date}}</p>
+				<p id="event-desc">Description: {{event.desc}}</p>
 				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
 				<p id="event-rating">Rating: {{event.rating}}</p>
 			</div>	
