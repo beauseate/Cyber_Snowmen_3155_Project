@@ -113,6 +113,7 @@ DESC: The route to each individual event filtered by it's event ID.
 @app.route('/events/<e_id>', methods = ['GET', 'POST'])
 def get_event(e_id):
     eventExists = db.session.query(Event).filter_by(event_id=e_id).first()
+    usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
     if session.get('user') and eventExists:
         # Check to see if the user has already liked this event
         hasFavorited = db.session.query(Event, Favorites).filter(eventExists.event_id == Favorites.event_id
@@ -262,7 +263,7 @@ def get_event(e_id):
             db.session.add(notificationComment)
             db.session.commit()
             return redirect(url_for('get_event', e_id=eventExists.event_id))
-        return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form)
+        return render_template('EventInfo.html', user=session['user'], event=eventExists, form=comment_form, usersAttending=usersAttending)
     # If the user is logged in and tries to access an event that doesn't exist, i.e. through the URL directly
     # Redirect them to the list of all events instead
     elif session.get('user') and (not eventExists):

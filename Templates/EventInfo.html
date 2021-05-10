@@ -55,6 +55,15 @@
 			</div>
 			<div class="events-right">
 				<a id="event-title" href="{{ url_for('get_event', e_id=event.event_id )}}">{{event.name}}</a>
+				<p id="event-attending">Other people attending:
+					{% for user in usersAttending %}
+						{% if user.event_id == event.event_id %}
+						
+							<p>{{user.first_name}} {{user.last_name}}</p>
+						{% endif %}
+						
+					{% endfor %}
+				</p>
 				<p id="event-date">Date: {{event.date}}</p>
 				<p id="event-desc">Description: {{event.desc}}</p>
 				<p id="event-user">Event Created By: <strong>{{event.user}}</strong></p>
