@@ -36,6 +36,16 @@
 	
 
 	<main>
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+    			{% for message in messages %}
+      				<dialog open id="messages">
+              			{{ message }}
+                		<button onclick="window.messages.close();">Close</button>
+          			</dialog>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
 		<h1>Created Events</h1>
         <br>
         {% for event in created_events %}

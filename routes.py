@@ -371,6 +371,7 @@ def unRSVP(event_id):
         db.session.delete(event)
         db.session.commit()
 
+        flash("You have successfully un-RSVP'd from this event!")
         return redirect(url_for('my_events'))
     else:
         return redirect(url_for('login'))
@@ -391,6 +392,7 @@ def delete_event(event_id):
         db.session.delete(my_event)
         db.session.commit()
 
+        flash("Event deleted!")
         return redirect (url_for('my_events'))
     else:
         #user is not in session redirect to login
