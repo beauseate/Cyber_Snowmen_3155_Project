@@ -91,8 +91,13 @@ def index():
     # Now sends list of all events to homepage
     if session.get('user'):
         listEvents = db.session.query(Event).all()
+        listUsers = db.session.query(User).all()
         notficationList = db.session.query(Notifications).filter(Notifications.user_id == session['user_id']).all()
-        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList)
+        #usersAttending = db.session.query(RSVP).filter(User.user_id == RSVP.user_id).all()
+        usersAttending = db.session.query(RSVP).\
+                join(User).\
+                filter(RSVP.user_id == User.user_id)
+        return render_template('Home.html', events=listEvents, user=session['user'], notification=notficationList, usersAttending=usersAttending, Users=listUsers)
 
     else:
         listEvents = db.session.query(Event).all()
@@ -118,7 +123,7 @@ def get_event(e_id):
                                                       ).filter(session['user_id'] == Rating.user_id).first()
         # Check to see if the user has already RSVP'd to this event
         isRSVP = db.session.query(RSVP, Event).filter(eventExists.event_id == RSVP.event_id
-                                                      and session['user_id'] == RSVP.user_id).first()
+                                                      ).filter(session['user_id'] == RSVP.user_id).first()
         comment_form = CommentForm()
         # Increase the favorite count of an event if the favorite button is clicked
         if request.method == 'POST' and ('favorite' in request.form):
